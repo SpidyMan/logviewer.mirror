@@ -105,14 +105,13 @@ class SelfTest(LogFileBase):
 
         # noinspection PyBroadException
         try:
-            self._exec_param = stmatch.group('exec_param').split(":")[1].strip()
+            self._exec_param = stmatch.group('exec_param').decode('utf-8').split(":")[1].strip()
         except:
             self._exec_param = ""
 
         self.Parameters = {}
 
         parammatch = searegex.RegexSTParam.search(st_raw)
-        # print(f'param_match:{parammatch}')
         if parammatch:
             paramlist = parammatch.group('param')
             # noinspection PyBroadException
