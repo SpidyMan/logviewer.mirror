@@ -1,0 +1,320 @@
+# -*- coding: utf-8 -*-
+# ----------------------------------------------------------------------------------------#
+# Property of Seagate Technology, Copyright 2017, All rights reserved                     #
+# ----------------------------------------------------------------------------------------#
+"""
+    sealogfile
+
+    Test State
+
+    :copyright: (c) 2017 Seagate Technology.
+    :author: Chen Chao <chao.c.chen@seagate.com>
+"""
+from functools import cmp_to_key
+import re
+
+from . import utils
+
+from . import searegex
+from .dblog import DBLog
+from .selftest import SelfTest
+from .baselogfile import LogFileBase, UnProcessedException
+
+utils.set_locale()
+
+
+class TestState(LogFileBase):
+    def __init__(self, f3log, seq=-1):
+        """ init """
+        LogFileBase.__init__(self, f3log)
+        self._parent = f3log
+        self.StateName = "StatesName"
+        self.Seq = seq
+
+        self._starttime = None
+        self._endtime = None
+        self._stlist = None
+        self._dbloglist = None
+        self._process_hook = None
+        self._stdict = {}
+        self._dblogdict = {}
+
+    @property
+    def isValidState(self):
+        return self.Seq > -1
+    
+    def _get_starttime(self):
+        if self._starttime is None:
+            match = self.regex_search(regex=searegex.RegexDateDetails,
+                                      span=self.Span, first=True)
+            if match:
+                self._starttime = utils.parse_datetime(match.group(0).strip(), searegex.FormatDatetime)
+        return self._starttime
+
+    def _set_starttime(self, val):
+        self._starttime = val
+
+    StartTime = property(_get_starttime, _set_starttime)
+
+    def _get_endtime(self):
+        if self._endtime is None:
+            match = self.regex_search(regex=searegex.RegexDateDetails,
+                                      span=self.Span, first=False)
+            if match:
+                self._endtime = utils.parse_datetime(match.group(0).strip(), searegex.FormatDatetime)
+        return self._endtime
+
+    def _set_endtime(self, val):
+        self._endtime = val
+
+    EndTime = property(_get_endtime, _set_endtime)
+
+    @property
+    def TestTime(self):
+        testtime = self.EndTime - self.StartTime
+        return testtime.seconds + testtime.days*24*3600
+
+    @property
+    def TestStateList(self):
+        return [self]
+    
+    @property
+    def DBLogList(self):
+        """ All DBLogs in this state, type(list of DBLog) readonly"""
+        if not self.isProcessed:
+            raise UnProcessedException(self.f3log.FileName)
+        
+        if self._dbloglist is None:
+            self._dbloglist = []
+            for st in self.STList:
+                self._dbloglist += st.DBLogList
+        return self._dbloglist
+
+    def process_hook(self, *args, **kwargs):
+        if callable(self._process_hook):
+            self._process_hook(*args, **kwargs)
+
+    def process_stlist(self, process_hook=None):
+        self._process_hook = process_hook
+        stlist = self.STList
+        self._process_hook = None
+        return stlist
+
+    @property
+    def STList(self):
+        """ SelfTests in this state, type(list of SelfTest) readonly"""
+        if not self.isProcessed:
+            raise UnProcessedException(self.f3log.FileName)
+
+        def str_to_int(hex_str, base=16):
+            i = int(hex_str, base)
+            if i >= 0x8000:
+                i -= 0x10000
+            return i
+
+        def parse_pes_data(txt_result):
+            re_line = re.compile("\n(?P<wedge>[0-9A-F]{3})\s(?P<min>[0-9A-F]{4})"
+                                 "\s(?P<mean>[0-9A-F]{4})\s(?P<max>[0-9A-F]{4})")
+
+            iter_line = re_line.finditer(txt_result)
+            data = []
+            for m in iter_line:
+                data.append([str_to_int(s) for s in m.groups()])
+            return data
+
+        def parse_agc_data(txt_result):
+            raw_data = []
+            for rev_str in txt_result.split("\n"):
+                rev_str = rev_str.strip()
+                if rev_str.startswith("Rev"):
+                    values = rev_str.split(" ")
+                    rev = int(values[1].replace(":", ""))
+                    for wedge, data in enumerate(values[2:]):
+                        data = int(data)
+                        raw_data.append([rev, wedge, data])
+
+            return raw_data
+
+        def find_st_end_pos(pos):
+            end_pos = 0
+            for _st in self._stlist[::-1]:
+                if _st.Span[1] < pos:
+                    return _st.Span[1]
+
+            return end_pos
+            
+        if self._stlist is None:
+            self._stlist = []
+            
+            spacing_startpos = 0
+            big_size_state = self.Size > utils.BIG_STATE_SIZE
+            state_raw = self.GetPartOfFile(self.Span)
+
+            # replace kpivdct={...} which waste time to process
+            def replace_with_blank(m):
+                return " " * (m.span()[1] - m.span()[0])
+
+            state_raw = re.sub(rb"kpivdct=\{.+?\}\n",
+                               replace_with_blank, state_raw, re.DOTALL)
+            state_raw = re.sub(rb"Tables not uploaded to oracle:.+?\n",
+                               replace_with_blank, state_raw, re.DOTALL)
+
+            iter_st = searegex.RegexST.finditer(state_raw)
+
+            for stmatch in iter_st:
+                st = SelfTest(self)
+                st.Process(stmatch, startpos=self.Span[0], delay_mode=big_size_state)
+                
+                # process spacing content
+                self._processSpacingContent(state_raw, spacing_startpos, st.Span[0]-self.Span[0])
+                
+                self._stlist.append(st)
+                spacing_startpos = self._stlist[-1].Span[1]-self.Span[0]   # move spacing start to ST end
+
+                self.process_hook(st)
+
+            iter_f3diag = searegex.RegexF3Diag.finditer(state_raw)
+            for match in iter_f3diag:
+                st_diag = SelfTest(self, f3diag=match.group(0))
+                start = match.end()
+                end = start + 64000
+                match_diag_result = searegex.RegexF3DiagResult.search(state_raw, start, end)
+
+                if match_diag_result:
+                    cmd = match_diag_result.group("cmd")
+                    result = match_diag_result.group("result")
+
+                    if cmd is None:
+                        st_diag._exec_param = "diag cmd"
+                    else:
+                        cmd = cmd.strip()
+                        st_diag.F3Diag += cmd
+
+                    st_diag.Span = (self.Span[0]+match.start(), self.Span[0]+match_diag_result.end())
+
+                    if cmd == "/4U100D":
+                        cmd_result = result.strip() if result else ""
+                        cmd_data = parse_pes_data(cmd_result)
+                        dblog_diag = DBLog(st_diag)
+                        dblog_diag.Name = "PES_DATA"
+                        dblog_diag.Description = ["Wedge", "Min", "Mean", "Max"]
+                        dblog_diag.Span = st_diag.Span
+                        dblog_diag.data = "\n".join([" ".join([str(i) for i in line]) for line in cmd_data])
+                        st_diag.DBLogList.append(dblog_diag)
+                    elif cmd == "/4k1":
+                        cmd_result = result.strip() if result else ""
+                        cmd_data = parse_agc_data(cmd_result)
+                        dblog_diag = DBLog(st_diag)
+                        dblog_diag.Name = "AGC_DATA"
+                        dblog_diag.Description = ["Rev", "Wedge", "AGC"]
+                        dblog_diag.Span = st_diag.Span
+                        dblog_diag.data = "\n".join([" ".join([str(i) for i in line]) for line in cmd_data])
+                        st_diag.DBLogList.append(dblog_diag)
+
+                else:
+                    st_diag._exec_param = "no cmd"
+                    st_diag.Span = (self.Span[0]+match.start(), self.Span[0]+match.end())
+                
+                #self._stlist.sort(cmp=self.sort_by_span)
+                self._stlist.sort(key=cmp_to_key(self.sort_by_span))
+                spacing_startpos = find_st_end_pos(st_diag.Span[0]) - self.Span[0]
+
+                self._processSpacingContent(state_raw, spacing_startpos, st_diag.Span[0]-self.Span[0])
+                self._stlist.append(st_diag)
+
+                self.process_hook(st_diag)
+
+            # process spacing content from last ST to End of State
+            if self._stlist:
+                #self._stlist.sort(cmp=self.sort_by_span)
+                self._stlist.sort(key=cmp_to_key(self.sort_by_span))
+                spacing_startpos = self._stlist[-1].Span[1]-self.Span[0]
+            else:
+                spacing_startpos = 0
+
+            self._processSpacingContent(state_raw, spacing_startpos, self.Span[1]-self.Span[0], True)
+
+        return self._stlist
+
+    @property
+    def SelfTestDict(self):
+        """ All selftests in this state, type(dict of SelfTest by TestNum) readonly"""
+        if not self.isProcessed:
+            raise UnProcessedException(self.f3log.FileName)
+        if not self._stdict:
+            for state in self.TestStateList:
+                for st in state.STList:
+                    if st.TestNum in self._stdict:
+                        self._stdict[st.TestNum].append(st)
+                    else:
+                        self._stdict[st.TestNum] = [st]
+        return self._stdict
+
+    @property
+    def DBLogDict(self):
+        """ All dblogs in this state, type(dict of DBLog by DBLogName) readonly"""
+        if not self.isProcessed:
+            raise UnProcessedException(self.f3log.FileName)
+        if not self._dblogdict:
+            for st in self.STList:
+                for dblog in st.DBLogList:
+                    if dblog.Name.lower() in self._dblogdict:
+                        self._dblogdict[dblog.Name.lower()].append(dblog)
+                    else:
+                        self._dblogdict[dblog.Name.lower()] = [dblog]
+        return self._dblogdict
+    
+    def Process(self, statematch, startpos=0):
+        """ Process state match, startpos means match start position in while file"""
+        self.Span = tuple([p+startpos for p in statematch.span()])
+        # noinspection PyBroadException
+        try:
+            self.Seq = int(statematch.group('curseq'))
+        except:
+            pass
+
+        self.StateName = statematch.group('statename')
+        if statematch.group('starttime'):
+            self._starttime = utils.parse_datetime(statematch.group("starttime").strip(), searegex.FormatDatetime)
+
+        if statematch.group('endtime'):
+            self._endtime = utils.parse_datetime(statematch.group("endtime").strip(), searegex.FormatDatetime)
+
+        self._stlist = None
+        self._dbloglist = None
+        self._stdict = {}
+        self._dblogdict = {}
+
+        self.isProcessed = True
+    
+    def _processSpacingContent(self, content, startpos, endpos, winfof_mode=False):
+        """ class internal use: Crunch spacing content not in a SelfTest"""
+        if winfof_mode:
+            iter_winfof_st = searegex.RegexST_WinFOF.finditer(content, startpos, endpos)
+            org_startpos = startpos
+            for stmatch in iter_winfof_st:
+                st = SelfTest(self)
+                st.Process(stmatch, startpos=org_startpos)
+                self._stlist.append(st)
+                startpos = st.Span[1]-org_startpos   # move spacing start to ST end
+
+        iter_dblog_match = searegex.RegexDBLog.finditer(content, startpos, endpos)
+
+        for dblogmatch in iter_dblog_match:
+            st_dummy = SelfTest(self)
+            dblog = DBLog(st_dummy)
+            dblog.Process(dblogmatch, startpos=self.Span[0])
+
+            if dblog.Name == "TEST_TIME_BY_TEST" and self._stlist:
+                self._stlist[-1].DBLogList.append(dblog)
+                continue
+
+            st_dummy.Span = (self.Span[0]+dblogmatch.start(), self.Span[0]+dblogmatch.end())
+            st_dummy.DBLogList.append(dblog)
+            st_dummy.isProcessed = True
+            st_dummy._exec_param = dblog.Name
+            self._stlist.append(st_dummy)
+            
+    def __str__(self):
+        return 'Name:%s Seq:%s Span:%s Size:%d Testtime:%s' % (self.StateName, self.Seq,
+                                                               self.Span, self.Size, self.TestTime)
