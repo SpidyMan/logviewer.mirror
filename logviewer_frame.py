@@ -5,17 +5,14 @@ import sys
 from sealogfile.utils import parse_NRF_file, split_db_table_line, parse_NRF_file_by_Python
 from wx.py.editor import EditWindow
 import math
+def str_it(value):
+    if isinstance(value,bytes):
+        return value.decode('utf-8')
+    else:
+        return value
+
 class LogViewer(wx.Frame):
-    @property
-    def searchFrame(self):
-        if self._searchframe == None:
-            self._searchframe = sealog.FrameSearch(self,
-                style=wx.DEFAULT_DIALOG_STYLE | wx.FRAME_TOOL_WINDOW | wx.FRAME_FLOAT_ON_PARENT | wx.RESIZE_BORDER)
-            self._searchframe.SetSTC(self.editor)
-            self._searchframe.SetLogViewer(self.right_panel)
-            self._searchframe.SetTitle("Search: %s" % self.Parent.GetTitle())
-        return self._searchframe
-    
+
     def OnKeyDown(self, event):
         """Key down event handler."""
         key = event.GetKeyCode()
@@ -35,17 +32,9 @@ class LogViewer(wx.Frame):
             wx.py.dispatcher.send(signal='FontDefault')
         # Find text
         elif controlDown and key in (ord('F'), ord('f')):
-            self.ShowSearchDialog()
-        elif controlDown and key in (ord('Q'), ord('q'), 343):
-            self.parent.CloseLog()
-        elif key in (342,):
-            wx.py.dispatcher.send(signal='Prev', sender=self.searchFrame)
-        elif key in (343,):
-            wx.py.dispatcher.send(signal='Next', sender=self.searchFrame)
-        elif key in (27,):
-            wx.py.dispatcher.send(signal='Close', sender=self.searchFrame, event=None)
-        elif key in (32,):
-            self.editor.PageDown()
+            search_dialog = sealog.SearchDialog(self)
+            search_dialog.ShowModal()
+
         else:
             event.Skip()
 
@@ -93,16 +82,11 @@ class LogViewer(wx.Frame):
         
         # Store parsed log data
         self.log_data = log
-        self.logfile = log
+        #self.logfile = log
         self.build_tree()
 
         # Bind events
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_selection)
-    def str_it(self,value):
-        if isinstance(value,bytes):
-            return value.decode('utf-8')
-        else:
-            return value
         
     def build_tree(self):
         """Build tree based on the log data structure."""
@@ -113,15 +97,12 @@ class LogViewer(wx.Frame):
             state_item = self.tree.AppendItem(root, state.StateName)
             self.tree.SetItemData(state_item,state)
             for st in state.STList:
-                #print(st.ExecutionParameter)
-                
-                name = self.str_it(st.TestName)
-                param = self.str_it(st.ExecutionParameter)
+                name = str_it(st.TestName)
+                param = str_it(st.ExecutionParameter)
                 try:
                     stitem = f"[{st.TestNum:03}] {name} ({param})" 
                 except:
                     stitem = f"[{st.TestNum:03}] Unknown Test ({param})"
-                # st_vir_name = st.DBLogList[0].Name if st.TestNum == -1 else st.TestName
                 if isinstance(stitem,bytes):stitem = stitem.decode("utf-8")
 
                 st_item = self.tree.AppendItem(state_item,stitem)
@@ -174,31 +155,10 @@ class LogViewer(wx.Frame):
             wx.py.dispatcher.send(signal='FontDefault')
         # Find text
         elif controlDown and key in (ord('F'), ord('f')):
-            self.ShowSearchDialog()
-       
-        elif controlDown and key in (ord('Q'), ord('q'), 343):
-            self.parent.CloseLog()
-        elif key in (342,):
-            wx.py.dispatcher.send(signal='Prev', sender=self.searchFrame)
-        elif key in (343,):
-            wx.py.dispatcher.send(signal='Next', sender=self.searchFrame)
-        elif key in (27,):
-            wx.py.dispatcher.send(signal='Close', sender=self.searchFrame, event=None)
-        elif key in (32,):
-            self.editor.PageDown()
+            search_dialog = sealog.SearchDialog(self)
+            search_dialog.ShowModal()
         else:
             event.Skip()
-
-
-    def ShowSearchDialog(self):
-        text = ''
-       # text = self.editor.GetSelectedTextUTF8()
-        
-        if text:
-            self.searchFrame.SetSearchWord(text)
-        self.searchFrame.Show()
-        self.searchFrame.panel.searchWord.SetFocus()
-
 
 # Main application
 if __name__ == "__main__":
