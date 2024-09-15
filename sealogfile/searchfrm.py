@@ -70,6 +70,7 @@ class SearchDialog(wx.Dialog):
         
         if not search_text:
             return
+        #if not isinstance(search_text,bytes): search_text = bytes(search_text,'utf-8')
         
         # Define flags for regex searches
         flags = 0
@@ -82,41 +83,42 @@ class SearchDialog(wx.Dialog):
 
         self.search_results = []
         # Iterate over lines in the editor
-        real_pos = 0
+        real_pos = 0  # Start tracking the overall position
+
+        #for line_no, line in enumerate(self.parent.raw_log.splitlines()):
         for line_no, line in enumerate(self.parent.editor.GetValue().splitlines()):
             if self.chk_regex.GetValue():
-                ## this function need to move out from line loop to get correct position.
-                # Use regex search if the checkbox is selected
-                # match = re.search(search_text, line, flags)
-                # if match:
-                #     start_pos, end_pos = match.span()+(real_pos,real_pos)  # Get the start and end positions of the match
-                #    DONOTUSE>> self.search_results.append(f"Line {line_no + 1}: {line} (Pos: {start_pos}-{end_pos})")
-                #     self.search_results.append((foundState, line_no, line, pos, end_pos))
-                wx.MessageBox(f"regex method not working now ...", "Search Results")
-                break
+                # Regex search when the checkbox is checked
+                match = re.search(search_text, line, flags)  # Make sure you define the correct regex flags
+                if match:
+                    start_pos, end_pos = match.span()  # Get start and end positions in the line
+                    start_pos += real_pos  # Adjust with real_pos to account for full log
+                    end_pos += real_pos    # Same adjustment for end_pos
+                    foundState = self.parent.log_data.GetStateByPos(start_pos)[0].StateName
+                    self.search_results.append((foundState, line_no, line, start_pos, end_pos))
             else:
-                # Non-regex search: handle case sensitivity manually
+                # Non-regex search: case-insensitive or case-sensitive
                 if not self.chk_case.GetValue():
-                    # Case-insensitive: convert both line and search text to lower
+                    # Case-insensitive search
                     lower_line = line.lower()
                     lower_search_text = search_text.lower()
-                    pos = lower_line.find(lower_search_text)  # Get the position of the match
+                    pos = lower_line.find(lower_search_text)
                     if pos != -1:
-                        pos += real_pos
+                        pos += real_pos  # Adjust the position with real_pos
                         end_pos = pos + len(lower_search_text)
                         foundState = self.parent.log_data.GetStateByPos(pos)[0].StateName
-                        #self.search_results.append(f"[{foundState}]Line {line_no + 1}: {line} (Pos: {pos}-{end_pos})")
                         self.search_results.append((foundState, line_no, line, pos, end_pos))
                 else:
-                    # Case-sensitive: perform the search as is
-                    pos = line.find(search_text)  # Get the position of the match
+                    # Case-sensitive search
+                    pos = line.find(search_text)
                     if pos != -1:
-                        pos += real_pos
-                        end_pos = pos + len(lower_search_text)
+                        pos += real_pos  # Adjust the position with real_pos
+                        end_pos = pos + len(search_text)  # Case-sensitive, so use the original search text length
                         foundState = self.parent.log_data.GetStateByPos(pos)[0].StateName
-                        #result_item = self.search_results.append(f"[{foundState}]Line {line_no + 1}: {line} (Pos: {pos}-{end_pos})")
                         self.search_results.append((foundState, line_no, line, pos, end_pos))
-            real_pos += len(line)
+            
+            real_pos += len(line) + 1  # Update real_pos after each line (+1 for newline character)
+
         # Display the results in the list box
         display_results = [f"[{foundState}] Line {line_no}: {line} (Pos: {pos}-{end_pos})"
                    for foundState, line_no, line, pos, end_pos in self.search_results]
@@ -139,11 +141,12 @@ class SearchDialog(wx.Dialog):
         select_index = self.lst_results.GetSelection()
 
         if select_index != wx.NOT_FOUND:
-            print(self.search_results[select_index])
-            result_text = self.lst_results.GetString(select_index)
-
-            line_number = int(result_text.split(":")[0].split()[1]) - 1
-            self.parent.editor.SetSelection(start_pos, end_pos)  # Highlight from start to end
+            select_item = self.search_results[select_index]
+            #(foundState, line_no, line, pos, end_pos)
+            result_text = select_item[2]
+            line_number = select_item[1]
+            #line_number = int(result_text.split(":")[0].split()[1]) - 1
+            self.parent.editor.SetSelection(select_item[3], select_item[4])  # Highlight from start to end
             self.parent.editor.ScrollToLine(line_number)
 
 

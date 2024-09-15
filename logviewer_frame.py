@@ -38,7 +38,7 @@ class LogViewer(wx.Frame):
         else:
             event.Skip()
 
-    def __init__(self, parent, title, log,raw_text):
+    def __init__(self, parent, title, log,raw_log):
         super(LogViewer, self).__init__(parent, title=title, size=(800,600))
         self.panel = wx.Panel(self)
     
@@ -48,6 +48,7 @@ class LogViewer(wx.Frame):
         self.right_panel = wx.Panel(self.splitter)
         self.splitter.SplitVertically(self.left_panel, self.right_panel, sashPosition=int(800 * 0.3))
         self._searchframe = None
+        self.raw_log = raw_log
         # Tree control for the left panel
         self.tree = wx.TreeCtrl(id=-1,
             name='treeLeft', parent=self.left_panel, pos=wx.Point(0, 0),
@@ -156,7 +157,7 @@ class LogViewer(wx.Frame):
         # Find text
         elif controlDown and key in (ord('F'), ord('f')):
             search_dialog = sealog.SearchDialog(self)
-            search_dialog.ShowModal()
+            search_dialog.Show()
         else:
             event.Skip()
 
