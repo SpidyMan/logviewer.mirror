@@ -1,127 +1,66 @@
-#import .....
 import wx
-import sealogfile as sealog
-import sys
-from sealogfile.utils import parse_NRF_file, split_db_table_line, parse_NRF_file_by_Python
-from wx.py.editor import EditWindow
-import math
-class LogViewer(wx.Frame):
-    def __init__(self, parent, title, log,raw_text):
-        super(LogViewer, self).__init__(parent, title=title, size=(800,600))
-        self.panel = wx.Panel(self)
-    
-        # Split window into two panels
-        self.splitter = wx.SplitterWindow(self.panel)
-        self.left_panel = wx.Panel(self.splitter)
-        self.right_panel = wx.Panel(self.splitter)
-        self.splitter.SplitVertically(self.left_panel, self.right_panel, sashPosition=int(800 * 0.3))
-        # Tree control for the left panel
-        self.tree = wx.TreeCtrl(id=-1,
-            name='treeLeft', parent=self.left_panel, pos=wx.Point(0, 0),
-            size=wx.Size(160, 466), style=wx.TR_DEFAULT_STYLE |
-                                          wx.TR_FULL_ROW_HIGHLIGHT | wx.TR_HAS_BUTTONS | wx.BORDER_THEME)
-        self.tree.SetSpacing(8)
-        self.tree.SetMinSize(wx.Size(10, 200))
-        # TextCtrl for the right panel (to display log content)
-        self.editor = EditWindow(self, parent=self.right_panel)
-        self.editor.SetAutoLayout(True)
-        self.editor.SetMinSize(wx.Size(300, 200))
-        self.editor.SetLexer(wx.stc.STC_LEX_NULL)
-        self.editor.SetEOLMode(wx.stc.STC_EOL_CRLF)
-        self.editor.SetEndAtLastLine(True)
-        self.editor.SetScrollWidth(4200)
-        self.editor.SetText(raw_log)
-        self.editor.SetLayoutCache(wx.stc.STC_CACHE_PAGE)
+import wx.grid as gridlib
+import pandas as pd
 
-        # Layout management
-        left_sizer = wx.BoxSizer(wx.VERTICAL)
-        left_sizer.Add(self.tree, 1, wx.EXPAND)
-        self.left_panel.SetSizer(left_sizer)
+# Sample data
+# data = {'Name': ['Alice', 'Bob', 'Charlie', 'David'],
+#         'Age': [24, 27, 22, 32],
+#         'Occupation': ['Engineer', 'Doctor', 'Artist', 'Lawyer']}
 
-        right_sizer = wx.BoxSizer(wx.VERTICAL)
-        right_sizer.Add(self.editor, 1, wx.EXPAND)
-        self.right_panel.SetSizer(right_sizer)
+#df = pd.DataFrame(data)
 
-        main_sizer = wx.BoxSizer(wx.VERTICAL)
-        main_sizer.Add(self.splitter, 1, wx.EXPAND)
-        self.panel.SetSizer(main_sizer)
+usecols= ['TRANS_SEQ','SERIAL_NUM','START_DATE','EVENT_DATE','EQUIP_TYPE','EQUIP_ID',\
+          'LOC_ID','SLOT','OPERATION','RUN_TYPE','EVENT_STATUS','BUILD_GROUP','FISCAL_DATE','SETUP_FILE']
+df = pd.read_csv('history_direct_sql.csv',usecols = usecols)
+#df = pd.read_csv('some_data.csv', usecols = ['col1','col2'], low_memory = True)
+class DataFrameGrid(wx.Frame):
+    def __init__(self, parent, title):
+        wx.Frame.__init__(self, parent, title=title, size=(1000, 600))
+
+        panel = wx.Panel(self)
+        self.grid = gridlib.Grid(panel)
+
+        # Create the grid
+        self.grid.CreateGrid(df.shape[0], df.shape[1])
+
+        # Set the column headers
+        for col_idx, col_name in enumerate(df.columns):
+            self.grid.SetColLabelValue(col_idx, col_name)
+
+        # Set the data in the grid
+        for row in range(df.shape[0]):
+            for col in range(df.shape[1]):
+                self.grid.SetCellValue(row, col, str(df.iloc[row, col]))
+
+        # Bind the cell click event
+        self.grid.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.on_row_click)
+
+        # Layout
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.grid, 1, wx.EXPAND)
+        panel.SetSizer(sizer)
+        self.Centre()
+        self.Show()
+
+    def on_row_click(self, event):
+        # Get the row and column where the click happened
+        row = event.GetRow()
+        col = event.GetCol()
+
+        # Retrieve the entire row information from the DataFrame
+        row_data = df.iloc[row]
         
-        # Store parsed log data
-        self.log_data = log
-        self.build_tree()
+        # Display the selected row data in the console (you can handle it differently)
+        print(f"Row {row} clicked: {row_data.to_dict()}")
 
-        # Bind events
-        self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_selection)
-    def str_it(self,value):
-        if isinstance(value,bytes):
-            return value.decode('utf-8')
-        else:
-            return value
-        
-    def build_tree(self):
-        """Build tree based on the log data structure."""
-        self.tree.DeleteAllItems()
-        root = self.tree.AddRoot('%s-%s-%s' % (log.SerialNo, log.Oper, log.ErrorCode))
-        self.tree.SetItemBold(root, True)
+        # You can also access a specific cell value if needed
+        cell_value = self.grid.GetCellValue(row, col)
+        print(f"Cell ({row}, {col}) clicked: {cell_value}")
 
-        for state in self.log_data.TestStateList:
-            state_item = self.tree.AppendItem(root, state.StateName)
-            self.tree.SetItemData(state_item,state)
-            self.tree.SetItemBold(state_item, True)
-            
-            for st in state.STList:
-                name = self.str_it(st.TestName)
-                param = self.str_it(st.ExecutionParameter)
-                try:
-                    stitem = f"[{st.TestNum:03}] {name} ({param})" 
-                except:
-                    stitem = f"[{st.TestNum:03}] Unknown Test ({param})"
-                # st_vir_name = st.DBLogList[0].Name if st.TestNum == -1 else st.TestName
-                if isinstance(stitem,bytes):stitem = stitem.decode("utf-8")
+        # Continue processing other events
+        event.Skip()
 
-                st_item = self.tree.AppendItem(state_item,stitem)
-                self.tree.SetItemData(st_item,st)
-
-                for dblog in st.DBLogList:
-                    dblog_str = (dblog.Name).decode("utf-8")
-                    dblog_item = self.tree.AppendItem(st_item, dblog_str)
-                    self.tree.SetItemData(dblog_item,dblog)
-        self.tree.Expand(root)
-    
-    
-    def ShowEditorLineNum(self):
-        maxline = self.stc.GetLineCount()
-        dc = wx.ClientDC(self.stc)
-        fontwidth = dc.GetCharWidth()
-        width = (math.floor(math.log10(maxline)) + 2) * fontwidth
-        #width = self.stc.TextWidth(wx.stc.STC_STYLE_LINENUMBER, 'O'*(maxline+1))
-        self.stc.SetMarginType(1, wx.stc.STC_MARGIN_NUMBER)
-        self.stc.SetMarginWidth(1, width)
-
-    def on_tree_selection(self, event):
-        """Handle selection of a tree item and highlight corresponding log text."""
-        item = self.tree.GetSelection()
-        item_data = self.tree.GetItemData(item)
-        start_pos = item_data.Span[0]
-        end_pos = item_data.Span[1]
-        self.editor.SetSelection(start_pos, end_pos)  # Highlight from start to end
-        # Calculate line position from start_pos
-        line_start = self.editor.LineFromPosition(start_pos)
-        self.editor.ScrollToLine(line_start-5)
-        self.editor.SetFocus() 
-
-
-
-# Main application
-if __name__ == "__main__":
-    txt_logfile = "B04D062F_COMET_135_PASS.txt"
-
-    log = sealog.F3LogFile(txt_logfile)
-    with open(txt_logfile,'rb') as raw_logf:
-        raw_log = raw_logf.read()
-    log.Process(skip_header_footer=True)
-    logclass = log#Log(raw_log,log.TestStateList)
+if __name__ == '__main__':
     app = wx.App(False)
-    frame = LogViewer(None, "Log Viewer", logclass,raw_log)
-    frame.Show(True)
+    frame = DataFrameGrid(None, 'Pandas DataFrame in wxPython')
     app.MainLoop()
