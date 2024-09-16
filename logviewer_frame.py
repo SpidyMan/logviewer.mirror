@@ -1,9 +1,14 @@
 #import .....
 import wx
 import sealogfile as sealog
+import wx.lib.buttons as buttons
 import sys
 from sealogfile.utils import parse_NRF_file, split_db_table_line, parse_NRF_file_by_Python
 from wx.py.editor import EditWindow
+import sql_query
+import pandas as pd
+import re
+from history_frame import history_frame
 import math
 def str_it(value):
     if isinstance(value,bytes):
@@ -33,15 +38,35 @@ class LogViewer(wx.Frame):
         # Find text
         elif controlDown and key in (ord('F'), ord('f')):
             search_dialog = sealog.SearchDialog(self)
-            search_dialog.ShowModal()
+            search_dialog.Show()
 
         else:
             event.Skip()
 
     def __init__(self, parent, title, log,raw_log):
         super(LogViewer, self).__init__(parent, title=title, size=(800,600))
+
+
+        self.toolbar = self.CreateToolBar()
+        self.toolbar.SetToolBitmapSize((24, 24))
+        
+        self.toolbar.AddControl(wx.StaticText(self.toolbar, -1, " DriveSN: "))
+        self.toolbar.AddSeparator()
+        #self.snlist = utils.getSetting("DriveSN_history", [])
+        self.snlist = ['aaa','bbb']
+        self.comboBoxSN = wx.ComboBox(parent=self.toolbar, id=-1, value="", size=wx.Size(90, 20), choices=self.snlist)
+        # self.comboBoxSN.Bind(wx.EVT_KEY_DOWN, self.OnSNKeyDown)
+        # self.comboBoxSN.Bind(wx.EVT_COMBOBOX, self.OnSNComboBox)
+        self.comboBoxSN.Select(0)
+        self.toolbar.AddControl(self.comboBoxSN)
+        self.toolbar.AddSeparator()
+        btnGo = buttons.ThemedGenBitmapTextButton(self.toolbar, -1, None, 'Show Logfile', size=wx.Size(100, 26))
+        self.toolbar.AddSeparator()
+        self.Bind(wx.EVT_BUTTON, self.OnButtonGo, btnGo)
+        self.toolbar.AddControl(btnGo)
+        self.toolbar.Realize() 
+
         self.panel = wx.Panel(self)
-    
         # Split window into two panels
         self.splitter = wx.SplitterWindow(self.panel)
         self.left_panel = wx.Panel(self.splitter)
@@ -88,7 +113,28 @@ class LogViewer(wx.Frame):
 
         # Bind events
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_selection)
-        
+    
+    def OnButtonGo(self, event):
+        event.Skip()
+        drivesn = self.comboBoxSN.GetValue().strip().upper()
+        m = re.search("([A-Z0-9]{8})", drivesn)
+        if len(drivesn) == 8 :
+
+            cursor = self.GetCursor()
+            self.SetCursor(wx.StockCursor(wx.CURSOR_WAIT))
+            history = sql_query.logservice_history_all(drivesn,100)
+            print(history)
+            if len(history.index)>0:
+                ###TODO: let put this sn into sn history list ....
+                historyfile = f'{drivesn}_history.csv'
+                history.to_csv(historyfile,index=False)
+
+                hist_frame = history_frame(self, history,'Pandas DataFrame in wxPython')
+                hist_frame.Show()
+            self.SetCursor(cursor)
+        else:
+            wx.MessageBox(msg="Pls input valid Drive SN!")
+
     def build_tree(self):
         """Build tree based on the log data structure."""
         self.tree.DeleteAllItems()

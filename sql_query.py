@@ -116,7 +116,7 @@ FETCH NEXT 10000 ROWS ONLY'''
 
     return query_sql(query_sql=query,params = [serial_num,trans_seq],show_query = show_query)
 
-def logservice_history(serial,show_query=False):
+def logservice_history(serial,maxseq = None,show_query=False):
     query =\
 '''SELECT e.SERIAL_NUM AS SERIAL_NUM , 
        CAST(e.TRANS_SEQ as integer) AS TRANS_SEQ,
@@ -137,8 +137,10 @@ LEFT OUTER JOIN ods.FILE_LOCATOR fl
     AND e.TRANS_SEQ = fl.TRANS_SEQ 
     AND e.EVENT_DATE = fl.EVENT_DATE 
 WHERE e.SERIAL_NUM = :1
-FETCH NEXT 10000 ROWS ONLY
 '''
+    if isinstance(maxseq,int):
+        query+=f'FETCH NEXT {maxseq} ROWS ONLY'
+
     return query_sql(query_sql=query,params=[serial],show_query = show_query)
 
 def logservice_fileloc(serial,show_query=False):
@@ -151,25 +153,26 @@ FETCH NEXT 10000 ROWS ONLY
 '''
     return query_sql(query_sql=query,params=[serial],show_query = show_query)
 
-def logservice_history_all(serial,show_query=False):
+def logservice_history_all(serial,maxseq = None,show_query=False):
     query = \
     '''SELECT 
-    e.TRANS_SEQ,
-    e.SERIAL_NUM,
-    e.EVENT_DATE,
-    e.EQUIP_ID,
-    e.OPERATION,
+    CAST(e.TRANS_SEQ as integer) as TS,
+    e.EVENT_DATE as DATE_TIME,
+    --e.SERIAL_NUM,
+    e.EQUIP_ID as EQP_ID,
+    e.OPERATION as OP,
     CASE 
         WHEN e.EVENT_STATUS = 'F' THEN COALESCE(clm.EVENT_FAIL_CODE, cum.EVENT_FAIL_CODE, pli.EVENT_FAIL_CODE,co.FAIL_CODE)
         WHEN e.EVENT_STATUS = 'P' THEN 'PASS'
         WHEN e.EVENT_STATUS = 'S' THEN 'START'
         ELSE e.EVENT_STATUS  -- This is optional if you want to keep any other status as is
-    END AS EVENT_STATUS,
+    END AS STATUS,
     '' AS RT,
     CASE 
 	    WHEN  fl.FILE_NAME IS not NULL THEN fl.HOST||'/' || fl."PATH" || fl.FILE_NAME 
 	    ELSE ''
-	    END AS LOGFILE
+	    END AS LOGFILE,
+        '' AS ATTR
 FROM 
     ODs.EVENT e
 LEFT JOIN 
@@ -198,6 +201,9 @@ AND e.EVENT_DATE > SYSDATE -100
 ORDER BY 
     e.EVENT_DATE DESC
 '''
+    if isinstance(maxseq,int):
+        query+=f'FETCH NEXT {maxseq} ROWS ONLY'
+
     return query_sql(query_sql=query,params=[serial],show_query = show_query)
 
 

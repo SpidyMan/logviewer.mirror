@@ -2,19 +2,38 @@ import wx
 import wx.grid as gridlib
 import pandas as pd
 
-# Sample data
-# data = {'Name': ['Alice', 'Bob', 'Charlie', 'David'],
-#         'Age': [24, 27, 22, 32],
-#         'Occupation': ['Engineer', 'Doctor', 'Artist', 'Lawyer']}
 
-#df = pd.DataFrame(data)
 
-usecols= ['TRANS_SEQ','SERIAL_NUM','START_DATE','EVENT_DATE','EQUIP_TYPE','EQUIP_ID',\
-          'LOC_ID','SLOT','OPERATION','RUN_TYPE','EVENT_STATUS','BUILD_GROUP','FISCAL_DATE','SETUP_FILE']
-df = pd.read_csv('history_direct_sql.csv',usecols = usecols)
-#df = pd.read_csv('some_data.csv', usecols = ['col1','col2'], low_memory = True)
-class DataFrameGrid(wx.Frame):
-    def __init__(self, parent, title):
+class history_frame(wx.Frame):
+    
+    def GetsAttr(self, row, col,df):
+        self._data= df
+        attr = gridlib.GridCellAttr()
+        if self._data['LOGFILE'][row]:
+            font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+            size = font.GetPointSize()
+            attr.SetFont(wx.Font(size, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD, False))
+            if df.iloc[0, col] == 'LOGFILE':
+               attr.SetTextColour(wx.BLUE)
+               attr.SetFont(wx.Font(size, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD, True))
+
+        if self._data['STATUS'][row].strip().upper() in ('START', 'S'):
+            attr.SetTextColour('#777777')
+        elif self._data['STATUS'][row].strip().upper() in ('N/A',):
+            attr.SetTextColour('#777777')
+        elif self._data['STATUS'][row].strip().upper() not in ('PASS', 'P'):
+            attr.SetBackgroundColour('#CC6666')
+        # elif self._data['STATUS_DESC'][row]:
+        #     attr.SetBackgroundColour('#669966')
+
+        if self._data['OP'][row].strip().upper() in ['DBG', 'ADG']:
+            attr.SetBackgroundColour('#FFCC33')
+        if self._data['OP'][row].strip().upper() in ['NTF']:
+            attr.SetBackgroundColour('#CC6630')
+
+        return attr
+    def __init__(self, parent,df, title):
+
         wx.Frame.__init__(self, parent, title=title, size=(1000, 600))
 
         panel = wx.Panel(self)
@@ -22,45 +41,35 @@ class DataFrameGrid(wx.Frame):
 
         # Create the grid
         self.grid.CreateGrid(df.shape[0], df.shape[1])
+        self.logfile_values = {}
 
-        # Set the column headers
         for col_idx, col_name in enumerate(df.columns):
             self.grid.SetColLabelValue(col_idx, col_name)
+            for row in range(df.shape[0]):
+                self.GetsAttr(row,col_idx,df)
 
-        # Set the data in the grid
-        for row in range(df.shape[0]):
-            for col in range(df.shape[1]):
-                self.grid.SetCellValue(row, col, str(df.iloc[row, col]))
-
-        # Bind the cell click event
         self.grid.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.on_row_click)
-
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.grid, 1, wx.EXPAND)
         panel.SetSizer(sizer)
         self.Centre()
         self.Show()
+    
 
     def on_row_click(self, event):
-        # Get the row and column where the click happened
         row = event.GetRow()
         col = event.GetCol()
-
-        # Retrieve the entire row information from the DataFrame
-        row_data = df.iloc[row]
-        
-        # Display the selected row data in the console (you can handle it differently)
-        print(f"Row {row} clicked: {row_data.to_dict()}")
-
-        # You can also access a specific cell value if needed
-        cell_value = self.grid.GetCellValue(row, col)
-        print(f"Cell ({row}, {col}) clicked: {cell_value}")
-
-        # Continue processing other events
+        # Check if the clicked cell is in the 'logfile' column
+        if (row, col) in self.logfile_values:
+            real_value = self.logfile_values[(row, col)]
+            print(f"Real value: {real_value}")
+            # Optionally, update the cell to show the real value
+            self.grid.SetCellValue(row, col, real_value)
         event.Skip()
 
 if __name__ == '__main__':
     app = wx.App(False)
-    frame = DataFrameGrid(None, 'Pandas DataFrame in wxPython')
+    df = pd.read_csv('historyfile.csv')
+    frame = history_frame(None, df,'Pandas DataFrame in wxPython')
     app.MainLoop()
