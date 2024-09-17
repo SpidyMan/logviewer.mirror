@@ -6,32 +6,34 @@ import pandas as pd
 
 class history_frame(wx.Frame):
     
-    def GetsAttr(self, row, col,df):
-        self._data= df
+
+    def get_cell_attr(self, row, col, df):
+        # Create a GridCellAttr object
         attr = gridlib.GridCellAttr()
-        if self._data['LOGFILE'][row]:
+
+        # Example of applying styles based on LOGFILE column
+        if col == 0 and df['LOGFILE'][row]:  # Assuming 'LOGFILE' is the first column
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
             size = font.GetPointSize()
-            attr.SetFont(wx.Font(size, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD, False))
-            if df.iloc[0, col] == 'LOGFILE':
-               attr.SetTextColour(wx.BLUE)
-               attr.SetFont(wx.Font(size, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD, True))
+            attr.SetFont(wx.Font(size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False))
+            attr.SetTextColour(wx.BLUE)
 
-        if self._data['STATUS'][row].strip().upper() in ('START', 'S'):
+        # Apply background color based on STATUS
+        if str(df['STATUS'][row]).strip().upper() == 'START':
             attr.SetTextColour('#777777')
-        elif self._data['STATUS'][row].strip().upper() in ('N/A',):
+        elif str(df['STATUS'][row]).strip().upper() == 'N/A':
             attr.SetTextColour('#777777')
-        elif self._data['STATUS'][row].strip().upper() not in ('PASS', 'P'):
+        elif str(df['STATUS'][row]).strip().upper() not in ('PASS', 'P'):
             attr.SetBackgroundColour('#CC6666')
-        # elif self._data['STATUS_DESC'][row]:
-        #     attr.SetBackgroundColour('#669966')
 
-        if self._data['OP'][row].strip().upper() in ['DBG', 'ADG']:
+        # Apply background color based on OP
+        if df['OP'][row].strip().upper() in ['DBG', 'ADG']:
             attr.SetBackgroundColour('#FFCC33')
-        if self._data['OP'][row].strip().upper() in ['NTF']:
+        if df['OP'][row].strip().upper() in ['NTF']:
             attr.SetBackgroundColour('#CC6630')
 
         return attr
+
     def __init__(self, parent,df, title):
 
         wx.Frame.__init__(self, parent, title=title, size=(1000, 600))
@@ -43,10 +45,12 @@ class history_frame(wx.Frame):
         self.grid.CreateGrid(df.shape[0], df.shape[1])
         self.logfile_values = {}
 
-        for col_idx, col_name in enumerate(df.columns):
-            self.grid.SetColLabelValue(col_idx, col_name)
-            for row in range(df.shape[0]):
-                self.GetsAttr(row,col_idx,df)
+        # Set cell values and attributes
+        for row in range(df.shape[0]):
+            for col in range(df.shape[1]):
+                self.grid.SetCellValue(row, col, str(df.iloc[row, col]))
+                attr = self.get_cell_attr(row, col, df)
+                self.grid.SetAttr(row, col, attr)  # Set the attribute for the cell
 
         self.grid.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.on_row_click)
         # Layout
@@ -70,6 +74,6 @@ class history_frame(wx.Frame):
 
 if __name__ == '__main__':
     app = wx.App(False)
-    df = pd.read_csv('historyfile.csv')
+    df = pd.read_csv('B04D062F_history.csv')
     frame = history_frame(None, df,'Pandas DataFrame in wxPython')
     app.MainLoop()

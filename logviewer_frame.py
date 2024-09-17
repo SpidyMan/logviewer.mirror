@@ -5,7 +5,7 @@ import wx.lib.buttons as buttons
 import sys
 from sealogfile.utils import parse_NRF_file, split_db_table_line, parse_NRF_file_by_Python
 from wx.py.editor import EditWindow
-import sql_query
+#import sql_query
 import pandas as pd
 import re
 from history_frame import history_frame
@@ -122,7 +122,11 @@ class LogViewer(wx.Frame):
 
             cursor = self.GetCursor()
             self.SetCursor(wx.StockCursor(wx.CURSOR_WAIT))
-            history = sql_query.logservice_history_all(drivesn,100)
+            local_file = True
+            if local_file:
+                history = pd.read_csv('B04D062F_history.csv')
+            else:
+                history = sql_query.logservice_history_all(drivesn,100)
             print(history)
             if len(history.index)>0:
                 ###TODO: let put this sn into sn history list ....
@@ -133,7 +137,7 @@ class LogViewer(wx.Frame):
                 hist_frame.Show()
             self.SetCursor(cursor)
         else:
-            wx.MessageBox(msg="Pls input valid Drive SN!")
+            wx.MessageBox("Pls input valid Drive SN!")
 
     def build_tree(self):
         """Build tree based on the log data structure."""
