@@ -2,72 +2,14 @@
 import wx
 import sealogfile as sealog
 import wx.lib.buttons as buttons
-from sealogfile.utils import parse_NRF_file, split_db_table_line, parse_NRF_file_by_Python
 from wx.py.editor import EditWindow
-#import sql_query
+import sql_query
 import pandas as pd
-import re,os,shutil,math,sys,ftplib
+import re,os,math
+import tempfile,ftplib
+import shutil
 from history_frame import history_frame
-from sealogfile.dexer.parse_log import parse_Text_log
-#========== FTP Account SETUP ==============
-FTP_USERNAME = 'rouser'
-FTP_PASSWORD = 'rouser@357'
-ConsolePrint = True
 
-logfile = 'processinglog.log'
-
-def write_log(message, log_file):
-    with open(log_file, 'a+') as f:
-        f.write(message + '\n')
-    if ConsolePrint:print(message)
-
-def download_file_from_ftp(host, path, filename, local_dir, log_file = None,SBR_raw_path = ""):
-    # SBR_raw_path is optional to seperate zip file by SBR ( not followed FTP path.)
-    try:
-        if isinstance(host, str): # host just a string means new host.
-            if log_file:write_log('connecting......',log_file)
-            ftp_server = ftplib.FTP(host, FTP_USERNAME, FTP_PASSWORD)
-            ftp_server.host = host
-
-            if ftp_server:
-                if log_file:write_log(f'Connected to FTP server {host}', log_file)
-            else:
-                if log_file:write_log('Failed to connect to FTP server', log_file)
-                return None,None
-        elif isinstance(host, ftplib.FTP):
-            ftp_server = host
-        else:
-            raise TypeError('Host should be either a string or ftplib.FTP instance.')
-
-        ftp_server.cwd('/'+path)
-        path_to_load = os.path.join(path, filename)             # path in FTP server
-        
-        if SBR_raw_path != "":
-            local_path = os.path.join(SBR_raw_path, filename)
-        else:
-            local_path = os.path.join(local_dir, path, filename)    # path in Local PC
-
-        os.makedirs(os.path.dirname(local_path), exist_ok=True)
-        tmp_file = tempfile.NamedTemporaryFile(delete=False) 
-
-        with tmp_file:
-            if log_file:write_log(f'Loading: {path_to_load}', log_file)
-            ftp_server.retrbinary(f'RETR {filename}', tmp_file.write)
-
-        tmp_local_path = tmp_file.name
-        shutil.move(tmp_local_path, local_path)
-        
-        if log_file:write_log(f'Downloaded {filename} to {local_path}', log_file)
-        return local_path,ftp_server
-
-    except Exception as e:
-        if log_file:write_log(f'Failed to download {filename}. Error: {e}', log_file)
-        try:
-            if tmp_local_path:
-                os.remove(tmp_local_path)
-        except Exception as remove_err:
-            if log_file:write_log(f'Failed to remove temporary file {tmp_local_path}. Error: {remove_err}', log_file)
-        return None,None
 
 def str_it(value):
     if isinstance(value,bytes):
@@ -271,9 +213,8 @@ class LogViewer(wx.Frame):
 
     def process_logfile(self,logfile_path:str):
         # download and parsing logfile.
+        local_dir = '/DownloadedLog/'
         if logfile_path:
-            # download log from ftp server...
-            # WHEN  fl.FILE_NAME IS not NULL THEN fl.HOST||'/' || fl."PATH" || fl.FILE_NAME  
             host,ftp_path,filename = logfile_path.split() 
             local_fullpath,host = download_file_from_ftp(host, ftp_path, filename, local_dir, log_file,SBR_raw_path)  
             return 0
