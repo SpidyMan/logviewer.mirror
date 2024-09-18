@@ -1,11 +1,10 @@
 import wx
 import wx.grid as gridlib
 import pandas as pd
-
+import sql_query
 class history_frame(wx.Frame):
-
-    
     def __init__(self, parent,df, title):
+        df = sql_query.logservice_history_all('B04D062F',100)
         log_selected = None
         wx.Frame.__init__(self, parent, title=title, size=(500, 600))
         panel = wx.Panel(self)
