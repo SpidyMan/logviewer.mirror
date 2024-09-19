@@ -3,30 +3,33 @@ import wx.grid as gridlib
 import pandas as pd
 import sql_query
 class history_frame(wx.Frame):
-    def __init__(self, parent,df, title):
-        df = sql_query.logservice_history_all('B04D062F',100)
+    def __init__(self, parent,serial,maxts = 100):
+        self.df = sql_query.logservice_history_all(serial,maxts)
         log_selected = None
-        wx.Frame.__init__(self, parent, title=title, size=(500, 600))
+        wx.Frame.__init__(self, parent, 
+                          title=f'{serial} history for latest:{maxts} transeqs', 
+                          size=(500, 600))
+        
         panel = wx.Panel(self)
         self.grid = gridlib.Grid(panel)
-        df = df.reset_index(drop=True)
-        df = df.fillna('')
+        self.df = self.df.reset_index(drop=True)
+        self.df = self.df.fillna('')
         self.grid.SetRowLabelSize(1)
         # Create the grid
-        self.grid.CreateGrid(df.shape[0], df.shape[1],selmode=gridlib.Grid.GridSelectRows)
+        self.grid.CreateGrid(self.df.shape[0], self.df.shape[1],selmode=gridlib.Grid.GridSelectRows)
         self.logfile_values = {}
         # Set the column headers
-        for col_idx, col_name in enumerate(df.columns):
+        for col_idx, col_name in enumerate(self.df.columns):
             self.grid.SetColLabelValue(col_idx, col_name)
-        logfile_col = df.columns.get_loc('LOGFILE')
+        logfile_col = self.df.columns.get_loc('LOGFILE')
         
-        for row in range(df.shape[0]):
-            for col in range(df.shape[1]):
-                if col == logfile_col and df.iloc[row, col]:
+        for row in range(self.df.shape[0]):
+            for col in range(self.df.shape[1]):
+                if col == logfile_col and self.df.iloc[row, col]:
                     self.grid.SetCellValue(row, logfile_col, 'View Log')
                 else:
-                    self.grid.SetCellValue(row, col, str(df.iloc[row, col]))
-                attr = self.get_cell_attr(row, col, df)
+                    self.grid.SetCellValue(row, col, str(self.df.iloc[row, col]))
+                attr = self.get_cell_attr(row, col, self.df)
                 self.grid.SetAttr(row, col, attr)  # Set the attribute for the cell
 
         self.grid.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.on_row_click)
@@ -37,7 +40,7 @@ class history_frame(wx.Frame):
         panel.SetSizer(sizer)
         self.Centre()
         self.Show()
-    
+        
     def get_cell_attr(self, row, col, df):
         # Create a GridCellAttr object
         attr = gridlib.GridCellAttr()
@@ -68,8 +71,8 @@ class history_frame(wx.Frame):
     def on_row_click(self, event):
         row = event.GetRow()
         col = event.GetCol()
-        if col == self.logfile_col and not pd.isna(df.iloc[row,col]):
-            self.log_selected = str(df.iloc[row, col])
+        if col == self.logfile_col and not pd.isna(self.df.iloc[row,col]):
+            self.log_selected = str(self.df.iloc[row, col])
         print(self.log_selected)
         event.Skip()
 
@@ -77,6 +80,5 @@ class history_frame(wx.Frame):
 
 if __name__ == '__main__':
     app = wx.App(False)
-    df = pd.read_csv('B04D062F_history.csv')
-    frame = history_frame(None, df,'Pandas DataFrame in wxPython')
+    frame = history_frame(None, serial='B04D062F',maxts=10)
     app.MainLoop()

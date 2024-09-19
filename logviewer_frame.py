@@ -122,7 +122,7 @@ class LogViewer(wx.Frame):
 
             cursor = self.GetCursor()
             self.SetCursor(wx.StockCursor(wx.CURSOR_WAIT))
-            local_file = True
+            local_file = False
             if local_file:
                 history = pd.read_csv('B04D062F_history.csv')
             else:

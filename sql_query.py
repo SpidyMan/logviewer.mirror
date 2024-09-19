@@ -169,7 +169,7 @@ def logservice_history_all(serial,maxseq = None,show_query=False):
     END AS STATUS,
     '' AS RT,
     CASE 
-	    WHEN  fl.FILE_NAME IS not NULL THEN fl.HOST||'/' || fl."PATH" || fl.FILE_NAME 
+	    WHEN  fl.FILE_NAME IS not NULL THEN fl.HOST||'/' || fl."PATH" ||'/' || fl.FILE_NAME 
 	    ELSE ''
 	    END AS LOGFILE,
         '' AS ATTR
