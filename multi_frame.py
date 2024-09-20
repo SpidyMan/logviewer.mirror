@@ -5,21 +5,16 @@ from wx.py.editor import EditWindow
 import pandas as pd
 import re, os, math
 from history_frame import history_frame
+from wiya_utils import str_it
 
-# Helper function for decoding
-def str_it(value):
-    if isinstance(value, bytes):
-        return value.decode('utf-8')
-    else:
-        return value
 
 class LogViewer(wx.Panel):
     """LogViewer modified to be used inside a tab."""
     
-    def __init__(self, parent, log, raw_log):
+    def __init__(self, parent, logobj:sealog.F3LogFile):
         super(LogViewer, self).__init__(parent)
-
-        self.raw_log = raw_log
+        with open(logobj.FileName,'rb') as r:
+            self.raw_log = r.read()
 
         # Split window into two panels
         self.splitter = wx.SplitterWindow(self)
@@ -39,8 +34,15 @@ class LogViewer(wx.Panel):
         self.editor = EditWindow(self, parent=self.right_panel)
         self.editor.SetAutoLayout(True)
         self.editor.SetMinSize(wx.Size(300, 200))
-        self.editor.SetText(raw_log)
+        self.editor.SetLexer(wx.stc.STC_LEX_NULL)
+        self.editor.SetEOLMode(wx.stc.STC_EOL_CRLF)
+        self.editor.SetEndAtLastLine(True)
+        self.editor.SetScrollWidth(4200)
+        self.editor.SetText(self.raw_log)
+        self.editor.SetLayoutCache(wx.stc.STC_CACHE_PAGE)
         self.editor.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.editor.setDisplayLineNumbers(True)
+        self.editor.ReadOnly = True
         
         # Layout management
         left_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -56,7 +58,8 @@ class LogViewer(wx.Panel):
         self.SetSizer(main_sizer)
         
         # Store parsed log data
-        self.log_data = log
+        self.log_data = logobj
+        print(logobj.TestStateList)
         self.build_tree()
 
         # Bind events
@@ -66,10 +69,12 @@ class LogViewer(wx.Panel):
         """Build tree based on the log data structure."""
         self.tree.DeleteAllItems()
         root = self.tree.AddRoot('%s-%s-%s' % (self.log_data.SerialNo, self.log_data.Oper, self.log_data.ErrorCode))
-        
+        self.tree.SetItemData(root, self.log_data)
+        self.tree.SetItemBold(root, True)
         for state in self.log_data.TestStateList:
             state_item = self.tree.AppendItem(root, state.StateName)
             self.tree.SetItemData(state_item, state)
+            self.tree.SetItemBold(state_item, True)
             for st in state.STList:
                 name = str_it(st.TestName)
                 param = str_it(st.ExecutionParameter)
@@ -81,7 +86,7 @@ class LogViewer(wx.Panel):
                 self.tree.SetItemData(st_item, st)
 
                 for dblog in st.DBLogList:
-                    dblog_str = (dblog.Name).decode("utf-8")
+                    dblog_str = dblog.Name
                     dblog_item = self.tree.AppendItem(st_item, dblog_str)
                     self.tree.SetItemData(dblog_item, dblog)
         self.tree.Expand(root)
@@ -101,7 +106,7 @@ class LogViewer(wx.Panel):
     def OnKeyDown(self, event):
         """Key down event handler."""
         event.Skip()
-
+        
 class MainFrame(wx.Frame):
     """MainFrame to manage multiple LogViewer instances using tabs."""
     
@@ -114,7 +119,7 @@ class MainFrame(wx.Frame):
         self.toolbar.AddControl(wx.StaticText(self.toolbar, -1, " DriveSN: "))
         self.toolbar.AddSeparator()
         #self.snlist = utils.getSetting("DriveSN_history", [])
-        self.snlist = ['aaa','bbb']
+        self.snlist = ['B04D062F']
         self.comboBoxSN = wx.ComboBox(parent=self.toolbar, id=-1, value="", size=wx.Size(90, 20), choices=self.snlist)
         self.comboBoxSN.Select(0)
         self.toolbar.AddControl(self.comboBoxSN)
@@ -178,6 +183,13 @@ class MainFrame(wx.Frame):
             self.notebook.AddPage(log_viewer, os.path.basename(filepath))
         except Exception as e:
             wx.MessageBox(f"Failed to open log file: {str(e)}", "Error", wx.OK | wx.ICON_ERROR)
+    def add_log_tab(self,logobj:sealog.F3LogFile):
+        logobj.Process(skip_header_footer=False)
+        log_viewer = LogViewer(self.notebook,logobj)
+        self.notebook.AddPage(log_viewer,os.path.basename(logobj.FileName),select = True)
+            
+
+
 
 # Main application
 if __name__ == "__main__":

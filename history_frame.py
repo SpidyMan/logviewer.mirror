@@ -2,9 +2,12 @@ import wx
 import wx.grid as gridlib
 import pandas as pd
 import sql_query
+from log_server_process import log_obj_creater
 class history_frame(wx.Frame):
     def __init__(self, parent,serial,maxts = 100):
-        self.df = sql_query.logservice_history_all(serial,maxts)
+        self.df = sql_query.logservice_history_all(serial,maxts,show_query=False)
+        self.serial = serial
+        self.maxts  =maxts
         log_selected = None
         wx.Frame.__init__(self, parent, 
                           title=f'{serial} history for latest:{maxts} transeqs', 
@@ -40,7 +43,7 @@ class history_frame(wx.Frame):
         panel.SetSizer(sizer)
         self.Centre()
         self.Show()
-        
+
     def get_cell_attr(self, row, col, df):
         # Create a GridCellAttr object
         attr = gridlib.GridCellAttr()
@@ -72,12 +75,17 @@ class history_frame(wx.Frame):
         row = event.GetRow()
         col = event.GetCol()
         if col == self.logfile_col and not pd.isna(self.df.iloc[row,col]):
-            self.log_selected = str(self.df.iloc[row, col])
-        print(self.log_selected)
+            # self.log_selected = str(self.df.iloc[row, col])
+            self.selected = self.df.iloc[row]
+            thisobj = log_obj_creater(serial = self.serial,
+                                                  oper = self.selected.OP,
+                                                  ts = self.selected.TS,
+                                                  code = self.selected.STATUS,
+                                                  ftp_zip_path=str(self.df.iloc[row, col]))
+            self.Parent.add_log_tab(thisobj.logobj)
         event.Skip()
 
     
-
 if __name__ == '__main__':
     app = wx.App(False)
     frame = history_frame(None, serial='B04D062F',maxts=10)

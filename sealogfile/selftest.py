@@ -17,7 +17,12 @@ from .testdesc import TestDescription
 from .baselogfile import LogFileBase, UnProcessedException
 
 from .dblog import DBLog
-import ast
+import ast,re
+
+def clean_string(paramlist):
+    # Use a regular expression to find and remove the 'L' suffix in numbers
+    cleaned_paramlist = re.sub(r'(\d+)L', r'\1', paramlist)
+    return cleaned_paramlist
 
 class SelfTest(LogFileBase):
 
@@ -119,7 +124,7 @@ class SelfTest(LogFileBase):
                 if isinstance(paramlist, bytes):
                     paramlist = paramlist.decode('utf-8')  # Convert bytes to string
                 paramlist = paramlist.replace("\r", "").replace("\n", "")
-                paramlist_dict = ast.literal_eval(paramlist)
+                paramlist_dict = ast.literal_eval(clean_string(paramlist))
                 self.TestNum = int(paramlist_dict[0][0])
                 self.Parameters = paramlist_dict[2]
             except:

@@ -322,3 +322,8 @@ def filenameExtraction(filename):
         date = f'202{d[0]}-0{d[1]}-{d[2:4]} {d[4:6]}:{d[6:8]}:{d[8:]}'
     
     return sn, date
+
+
+def parseAll(resultsData,outputFile):
+    data = resultsData.decode("utf-8")
+    outputFile.write(data.encode("utf-8"))

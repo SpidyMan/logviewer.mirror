@@ -17,7 +17,7 @@ import wx.lib.filebrowsebutton as filebrowse
 # from . import utils
 # from . import searcheng
 # from .tools import wxwidgets
-import utils
+import wiya_utils
 import searcheng
 from tools import wxwidgets
 
@@ -550,7 +550,7 @@ class FindInFilesThread(threading.Thread):
                 wx.CallAfter(self.func_update)
             wx.CallAfter(self.func_done)
         except:
-            utils.logger.exception("Find in Files Error:")
+            wiya_utils.logger.exception("Find in Files Error:")
             wx.CallAfter(self.func_done)
 
             
@@ -769,7 +769,7 @@ class PanelFindInFiles(wx.Panel):
         config.Wholeword = self.checkBoxWholeword.GetValue()
         config.Regular = self.checkBoxRegular.GetValue()
         config.SearchWord = self.searchWord.GetValue()
-        config.FileFilter = utils.RemoveNoneInList(self.searchFilter.GetValue().split(','))
+        config.FileFilter = wiya_utils.RemoveNoneInList(self.searchFilter.GetValue().split(','))
         if not config.FileFilter:
             config.FileFilter = ["*.*"]
         config.FileFilter = [f.strip() for f in config.FileFilter]

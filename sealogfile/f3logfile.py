@@ -25,8 +25,7 @@ from .dblog import DBLog
 from .selftest import SelfTest
 from .teststate import TestState
 from .baselogfile import LogFileTypes, LogFileBase, UnProcessedException
-
-
+from wiya_utils import str_it
 class F3LogFile(LogFileBase):
     """ F3 logfile """
     
@@ -42,7 +41,7 @@ class F3LogFile(LogFileBase):
         self.TestStateList = []
         self.FileName = filename
         self.FileSize = os.path.getsize(self.FileName)
-        self.isNRF = self.FileName.lower().endswith(".zip")
+        self.isNRF = False
         # noinspection PyBroadException
         try:
             elements = os.path.basename(filename).split("_")
@@ -298,7 +297,6 @@ class F3LogFile(LogFileBase):
             return
 
         header, footer = self.getHeaderFooter()
-
         config = searegex.RegexConfigInfo.search(header)
         if not config:
             config = searegex.RegexConfigInfo2.search(header)
@@ -315,11 +313,10 @@ class F3LogFile(LogFileBase):
     def Process(self, skip_header_footer=False, process_hook=None):
         """ Process this file """
         if self.isProcessed:
-            return
-        if self.isNRF:
-            if not self._isF3LogFile:
-                self.PreProcess()
-            return
+            if self.isNRF:
+                if not self._isF3LogFile:
+                    self.PreProcess()
+                return
         
         self.stlist = None
         self.dbloglist = None
@@ -345,7 +342,6 @@ class F3LogFile(LogFileBase):
             if not ec:
                 ec = searegex.RegexErrorCode2.search(footer)
             ec and self._crunchErrorCode(ec)
-
         self._addInfoState()
 
         process_hook and process_hook("Begin", self)
@@ -423,23 +419,24 @@ class F3LogFile(LogFileBase):
 
     def _crunchConfig(self, match):
         """ class internal use: Crunch file header to get Config Info """
-        self.Product = match.group('prod')
-        self.Config = match.group('config')
-        self.PartNum = match.group('scn')
-        self.SBR = match.group('sbr')
-        self.Oper = match.group('oper') or match.group('oper2')
-        self.SerialNo = match.group('sn')
+        self.Product = str_it(match.group('prod'))
+        self.Config = str_it(match.group('config'))
+        self.PartNum = str_it(match.group('scn'))
+        self.SBR = str_it(match.group('sbr'))
+        self.Oper = str_it(match.group('oper')) or str_it(match.group('oper2'))
+        self.SerialNo = str_it(match.group('sn'))
         self._isF3LogFile = True
-        self._config_match = match
+        self._config_match = str_it(match)
 
     def _crunchDriveAttrs(self, match):
         """ class internal use: Crunch file header to get Drive Attributes"""
         attrsblock = match.group('attrsblock')
         iter_attrs = searegex.RegexDriveAttr.finditer(attrsblock)
         for attr in iter_attrs:
-            name = attr.group('name').strip()
-            value = attr.group('value').strip()
+            name = str_it(attr.group('name').strip())
+            value = str_it(attr.group('value').strip())
             self.DriveInfo[name] = value
+            
 
         # noinspection PyBroadException
         try:
@@ -448,7 +445,6 @@ class F3LogFile(LogFileBase):
                 self.Product = cms_family or "unknown"
             elif self.Product.find("-.-") >= 0 and cms_family:
                 self.Product = cms_family
-
             self.Config = self.Config or self.DriveInfo.get('CMS_CONFIG') or "unknown"
             self.PartNum = self.PartNum or self.DriveInfo.get('PART_NUM') or "unknown"
             self.SBR = self.SBR or self.DriveInfo.get('SUB_BUILD_GROUP') or "unknown"
@@ -470,11 +466,34 @@ class F3LogFile(LogFileBase):
            self.ErrorCode = int(match.group('ec'))
 
         self.ErrorMsg = match.group('ecmsg').strip()
+    def convert_drive_info(self,drive_info):
+        converted_info = {}
+        for key, val in drive_info.items():
+            # Convert key to string if it's bytes
+            if isinstance(key, bytes):
+                key = key.decode('utf-8')
+            
+            # Convert value to the appropriate type
+            if isinstance(val, bytes):
+                try:
+                    # First, try to convert to an integer
+                    val = int(val.decode('utf-8'))
+                except ValueError:
+                    try:
+                        # If it fails, try to convert to a float
+                        val = float(val.decode('utf-8'))
+                    except ValueError:
+                        # If both fail, keep it as a string
+                        val = val.decode('utf-8')
+            
+            # Add the converted key-value pair to the new dictionary
+            converted_info[key] = val
+        
+        return converted_info
 
     def _addInfoState(self):
         # add a fake Drive Attributes State
         if self._attr_match or self._config_match:
-
             state_attrs = TestState(self)
             state_attrs.StateName = "DRV_ATTRS"
             state_attrs.isProcessed = True
@@ -487,6 +506,7 @@ class F3LogFile(LogFileBase):
                 dblog_attr.Name = "DRIVE_ATTRIBUTES"
                 dblog_attr.Description = ["Attribute", "Value"]
                 dblog_attr.Span = self._attr_match.span()
+                self.DriveInfo = self.convert_drive_info(self.DriveInfo)
                 dblog_attr.data = "\n".join(["%s\t%s" % (key, val) for key, val in self.DriveInfo.items()])
                 st.DBLogList.append(dblog_attr)
 

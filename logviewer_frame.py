@@ -19,29 +19,6 @@ def str_it(value):
 
 class LogViewer(wx.Frame):
 
-    def OnKeyDown(self, event):
-        """Key down event handler."""
-        key = event.GetKeyCode()
-        controlDown = event.ControlDown()
-        altDown = event.AltDown()
-
-        if controlDown and altDown:
-            event.Skip()
-        # Increase font size.
-        elif controlDown and key in (ord(']'), ord('}')):
-            wx.py.dispatcher.send(signal='FontIncrease')
-        # Decrease font size.
-        elif controlDown and key in (ord('['), ord('{'),):
-            wx.py.dispatcher.send(signal='FontDecrease')
-        # Default font size.
-        elif controlDown and key in (ord('+'), ord('=')):
-            wx.py.dispatcher.send(signal='FontDefault')
-        # Find text
-        elif controlDown and key in (ord('F'), ord('f')):
-            search_dialog = sealog.SearchDialog(self)
-            search_dialog.Show()
-        else:
-            event.Skip()
 
     def __init__(self, parent, title, log,raw_log):
         super(LogViewer, self).__init__(parent, title=title, size=(800,600))
@@ -114,6 +91,30 @@ class LogViewer(wx.Frame):
         # Bind events
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_selection)
     
+    def OnKeyDown(self, event):
+        """Key down event handler."""
+        key = event.GetKeyCode()
+        controlDown = event.ControlDown()
+        altDown = event.AltDown()
+
+        if controlDown and altDown:
+            event.Skip()
+        # Increase font size.
+        elif controlDown and key in (ord(']'), ord('}')):
+            wx.py.dispatcher.send(signal='FontIncrease')
+        # Decrease font size.
+        elif controlDown and key in (ord('['), ord('{'),):
+            wx.py.dispatcher.send(signal='FontDecrease')
+        # Default font size.
+        elif controlDown and key in (ord('+'), ord('=')):
+            wx.py.dispatcher.send(signal='FontDefault')
+        # Find text
+        elif controlDown and key in (ord('F'), ord('f')):
+            search_dialog = sealog.SearchDialog(self)
+            search_dialog.Show()
+        else:
+            event.Skip()
+            
     def OnButtonGo(self, event):
         event.Skip()
         drivesn = self.comboBoxSN.GetValue().strip().upper()
@@ -226,7 +227,8 @@ if __name__ == "__main__":
     log = sealog.F3LogFile(txt_logfile)
     with open(txt_logfile,'rb') as raw_logf:
         raw_log = raw_logf.read()
-    log.Process(skip_header_footer=True)
+    log.Process()
+    log.PrintHeaderInfo()
     logclass = log#Log(raw_log,log.TestStateList)
     app = wx.App(False)
     frame = LogViewer(None, "Log Viewer", logclass,raw_log)
