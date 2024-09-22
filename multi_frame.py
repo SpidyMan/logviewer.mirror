@@ -4,9 +4,10 @@ import wx.lib.buttons as buttons
 from wx.py.editor import EditWindow
 import pandas as pd
 import re, os, math
-from history_frame import history_frame
-from wiya_utils import str_it
-
+from history_frame import history_frame   #from history_frame import history_frame,log_obj_creater
+from log_server_process import log_obj_creater
+from sealogfile.utils import str_it
+# import sealogfile.highlight as HL
 
 class LogViewer(wx.Panel):
     """LogViewer modified to be used inside a tab."""
@@ -75,6 +76,8 @@ class LogViewer(wx.Panel):
             state_item = self.tree.AppendItem(root, state.StateName)
             self.tree.SetItemData(state_item, state)
             self.tree.SetItemBold(state_item, True)
+            #HL.highlight(self.editor, HL.STYLE_STATE, state_item)
+            # Highlight(stc_editor, style, f3logobj, base_start=0):
             for st in state.STList:
                 name = str_it(st.TestName)
                 param = str_it(st.ExecutionParameter)
@@ -84,11 +87,12 @@ class LogViewer(wx.Panel):
                     stitem = f"[{st.TestNum:03}] Unknown Test ({param})"
                 st_item = self.tree.AppendItem(state_item, stitem)
                 self.tree.SetItemData(st_item, st)
-
+                #HL.highlight(self.editor, HL.STYLE_SELFTEST, st_item)
                 for dblog in st.DBLogList:
                     dblog_str = dblog.Name
                     dblog_item = self.tree.AppendItem(st_item, dblog_str)
                     self.tree.SetItemData(dblog_item, dblog)
+                   # HL.highlight(self.editor, HL.STYLE_DBLOG, dblog_item)
         self.tree.Expand(root)
 
     def on_tree_selection(self, event):
@@ -165,9 +169,12 @@ class MainFrame(wx.Frame):
 
             cursor = self.GetCursor()
             self.SetCursor(wx.StockCursor(wx.CURSOR_WAIT))
-                ### maxts will be edited.
-            hist_frame = history_frame(self, drivesn,maxts=100)
-            hist_frame.Show()
+            if self.hist_frame is None or not self.hist_frame.IsShown():
+                self.hist_frame = history_frame(self, drivesn, maxts=100)
+                self.hist_frame.Show()
+            else:
+                self.hist_frame.Raise()  # Bring the existing frame to the front
+
             self.SetCursor(cursor)
         else:
             wx.MessageBox("Pls input valid Drive SN!")
@@ -196,4 +203,15 @@ if __name__ == "__main__":
     app = wx.App(False)
     frame = MainFrame(None, "Multiple Log Viewer")
     frame.Show(True)
+    #def __init__(self,serial,oper,ts,code,ftp_zip_path):
+    serial = "ABCDE"
+    oper = 'TEST'
+    ts = 99
+    code= 'PASS'
+    #ftp_zip_path = "teppinasv001.seagate.com/prod/none/merlin/history/COMET/20/B04D062F.4905113404.r.zip"
+    ftp_zip_path = "teppinasv001.seagate.com/prod/none/merlin/history/COMET/20/B04D062F.4905113404.r.zip"
+    local_file="B04D062F_COMET_135_PASS.txt"
+    log_process = log_obj_creater(serial,oper,ts,code,ftp_zip_path,local_file)
+
+    frame.add_log_tab(log_process.logobj)
     app.MainLoop()

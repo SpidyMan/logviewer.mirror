@@ -9,7 +9,7 @@ import re,os,math
 import tempfile,ftplib
 import shutil
 from history_frame import history_frame
-
+import sealogfile.highlight as HL
 
 def str_it(value):
     if isinstance(value,bytes):
@@ -70,6 +70,7 @@ class LogViewer(wx.Frame):
         self.editor.SetLayoutCache(wx.stc.STC_CACHE_PAGE)
         self.editor.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.editor.setDisplayLineNumbers(True)
+        HL.initStyles(self.editor)
         # Layout management
         left_sizer = wx.BoxSizer(wx.VERTICAL)
         left_sizer.Add(self.tree, 1, wx.EXPAND)

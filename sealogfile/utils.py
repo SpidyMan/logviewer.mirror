@@ -134,3 +134,10 @@ def parse_NRF_file_by_Python(nrf_filepath, output_file):
             return -1
 
     return ret_code
+
+# Helper function for decoding
+def str_it(value):
+    if isinstance(value, bytes):
+        return value.decode('utf-8')
+    else:
+        return value

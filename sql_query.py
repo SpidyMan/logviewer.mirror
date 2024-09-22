@@ -4,7 +4,7 @@
 # ( to use in real production reminded to change to do params blinding.)!!!!!!
 
 import pandas as pd
-import oracledb
+#import oracledb
 from datetime import datetime
 import time
 sql_user="comet_user"

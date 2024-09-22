@@ -20,12 +20,12 @@ from datetime import datetime
 
 from . import utils
 from . import searegex
-
+from .utils import str_it
 from .dblog import DBLog
 from .selftest import SelfTest
 from .teststate import TestState
 from .baselogfile import LogFileTypes, LogFileBase, UnProcessedException
-from wiya_utils import str_it
+
 class F3LogFile(LogFileBase):
     """ F3 logfile """
     
