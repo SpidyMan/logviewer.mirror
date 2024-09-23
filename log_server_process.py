@@ -15,8 +15,6 @@ FTP_PASSWORD=config['FTP'].get('FTP_PASSWORD')
 
 ConsolePrint = True
 directory = os.path.dirname(os.path.realpath(__file__))
-# FTP_USERNAME = 'rouser'
-# FTP_PASSWORD = 'rouser@357'
 
 class log_obj_creater():
     def __init__(self,serial,oper,ts,code,ftp_zip_path,local_file = None):
@@ -24,12 +22,11 @@ class log_obj_creater():
         self.oper = oper
         self.ts = ts
         self.code = code
-        print(f'{self.serial}_{self.oper}_{self.ts}_{self.code}-{ftp_zip_path}')
+        #print(f'{self.serial}_{self.oper}_{self.ts}_{self.code}-{ftp_zip_path}')
         if local_file and os.path.exists(local_file):
             self.logobj = self.setup_logobj(local_file)
             return ### just for testing  ... 
-        else:
-            print('nothere xx-xxx')
+
         
         self.txt_log = f'{self.serial}_{self.oper}_{self.ts}_{self.code}.txt'
         self.directory = os.path.dirname(os.path.realpath(__file__))
@@ -100,8 +97,6 @@ class log_obj_creater():
     
     def zip_extractor(self,zip_file,local_r):
         
-        print(f'ZipFile located here:{zip_file}')
-        print(''.join(zip_file.split('\\')[-1:]))
         r_filename = (''.join(zip_file.split('\\')[-1:])).strip('.zip')
         with zipfile.ZipFile(zip_file, 'r') as zip_ref:
             zip_ref.extract(r_filename, os.path.join(self.logfolder).replace('/',os.sep))
@@ -111,7 +106,6 @@ class log_obj_creater():
     
     def parse_log(self,r_file,output_file):
         with open(output_file,'wb') as outputfile:
-            print(r_file)
             parse_Text_log(r_file,outputfile)
         return output_file
 
@@ -128,5 +122,5 @@ if __name__ == "__main__":
     local_file="B04D062F_COMET_135_PASS.txt"
     logprocess = log_obj_creater(serial,oper,ts,code,ftp_zip_path,local_file)
     # print(type(logprocess.logobj))
-    print(logprocess.logobj.FileName)
+
     

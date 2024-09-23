@@ -15,17 +15,12 @@ sql_password=config['SQL'].get('sql_password')
 sql_host=config['SQL'].get('sql_host')
 sql_port=config['SQL'].getint('sql_port')
 sql_sid=config['SQL'].get('sql_sid')
-print(sql_user)
-print(sql_password)
-print(sql_host)
-print(sql_port)
-print(sql_sid)
+
 def sql_param_spliter(param): 
     ## this function will convert multiple params like abc,def or abc_def to 'abc','def'
     param = param.replace('_',',')
     _list = ["'" + s.strip() + "'" for s in param.split(',')]
     splited = ",".join(_list)
-    print(splited)
     return splited
 
 def date_time_converter(date_time_html):
@@ -35,8 +30,6 @@ def date_time_converter(date_time_html):
     return formatted_date
 
 def query_sql(query_sql,params=None,show_query = False):
-    print('====')
-    print(query_sql)
     try:
         connection = oracledb.connect(
             user=sql_user,

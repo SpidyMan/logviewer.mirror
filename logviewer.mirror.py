@@ -9,7 +9,6 @@ from log_server_process import log_obj_creater
 from sealogfile.utils import str_it
 class LogViewer(wx.Panel):
     """LogViewer modified to be used inside a tab."""
-    
     def __init__(self, parent, logobj:sealog.F3LogFile):
         super(LogViewer, self).__init__(parent)
         self.parent = parent
@@ -226,5 +225,5 @@ if __name__ == "__main__":
         # frame.add_log_tab(log_process.logobj)
         app.MainLoop()
     else:
-        print('Python2')
+        print('Python2.... You are too old.. please install new python..')
 
