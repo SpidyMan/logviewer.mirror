@@ -7,11 +7,16 @@ from sealogfile.dexer.parse_log import parse_Text_log
 from sealogfile import F3LogFile
 import os,io,zipfile
 #========== FTP Account SETUP ==============
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+FTP_USERNAME=config['FTP'].get('FTP_USERNAME')
+FTP_PASSWORD=config['FTP'].get('FTP_PASSWORD')
 
 ConsolePrint = True
 directory = os.path.dirname(os.path.realpath(__file__))
-FTP_USERNAME = 'rouser'
-FTP_PASSWORD = 'rouser@357'
+# FTP_USERNAME = 'rouser'
+# FTP_PASSWORD = 'rouser@357'
 
 class log_obj_creater():
     def __init__(self,serial,oper,ts,code,ftp_zip_path,local_file = None):
@@ -19,10 +24,9 @@ class log_obj_creater():
         self.oper = oper
         self.ts = ts
         self.code = code
-        self.ziped = ftp_zip_path
-        if os.path.exists(local_file):
+        print(f'{self.serial}_{self.oper}_{self.ts}_{self.code}-{ftp_zip_path}')
+        if local_file and os.path.exists(local_file):
             self.logobj = self.setup_logobj(local_file)
-            print('here ================')
             return ### just for testing  ... 
         else:
             print('nothere xx-xxx')
@@ -30,24 +34,30 @@ class log_obj_creater():
         self.txt_log = f'{self.serial}_{self.oper}_{self.ts}_{self.code}.txt'
         self.directory = os.path.dirname(os.path.realpath(__file__))
         self.logfolder = os.path.join(self.directory,'LOGFiles')
+        local_txt = os.path.join(self.logfolder,self.txt_log)
+        
+        #check if local text file exist.. 
         if os.path.exists(local_txt):
             print('local exist .. notthing to do')
             self.logobj = self.setup_logobj(local_txt)
             return
+        
         else: # no local file detected ... let do download or parse. if zip exist..
-            self.ftp_zip_path = self.ftp_zip_path.split('/')
+            self.ftp_zip_path = ftp_zip_path.split('/')
             self.host = self.ftp_zip_path[:1][0]
-            self.filename = self.ftp_zip_path[-1:][0]
+            self.ftp_filename = self.ftp_zip_path[-1:][0]
+
             self.path = '/'+'/'.join(self.ftp_zip_path[1:-1]) #+ '/'
-            ## check local log first if already have file then skip download and parse.
-            local_zip = os.path.join(self.logfolder, self.filename)    # path in Local PC
+            local_zip = os.path.join(self.logfolder, self.ftp_filename)    # path in Local PC
             local_r = Path(local_zip.strip('.zip'))
             local_txt = os.path.join(self.logfolder,self.txt_log)
-    
+
+        # check if r not exist.
         if not os.path.exists(local_r):  ## r file not exist.
-            if not os.path.exists(local_zip):  
-                self.download_file_from_ftp(self.host,self.path,self.filename,local_zip)
+            if not os.path.exists(local_zip):  # if zip not exist... re-download it.
+                self.download_file_from_ftp(self.host,self.path,self.ftp_filename,local_zip)
                 self.zip_extractor(local_zip,local_r)
+
         self.parse_log(local_r,local_txt)
         self.logobj = self.setup_logobj(local_txt)
         #remove zip and r ,,, keep only txt file.
@@ -101,6 +111,7 @@ class log_obj_creater():
     
     def parse_log(self,r_file,output_file):
         with open(output_file,'wb') as outputfile:
+            print(r_file)
             parse_Text_log(r_file,outputfile)
         return output_file
 

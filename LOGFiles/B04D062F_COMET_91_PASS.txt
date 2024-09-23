@@ -1,0 +1,906 @@
+
+Aug 07 2024-15:26:49  ##### FOF generated Results File  RestartStatus 0 #####
+CM/CellPy: 23.01-03 / 23OCT2023(bin) 23OCT2023(bin)+P3
+HostIP: 10.44.153.91
+CMIP: .91  poprig01.tep.thai.seagate.com
+CellTray: (5, 10)
+CCellEnv: 0 0
+CCellRIM: None None
+CellLimits: 
+	DefaultMaxHandlingTemp: 400
+	DefaultNegativeRampRate: 0
+	DefaultPositiveRampRate: 0
+	FirmwareThermalSafetyTripTemp: 590
+	MaxNegativeRampRate: 0
+	MaxPositiveRampRate: 0
+	MaxTemp: 550
+	MinTemp: 350
+	FPGA_DfanTripLimit_MaxRPM: 0
+	FPGA_DfanTripLimit_MinRPM: 0
+	FPGA_EfanTripLimit_MaxRPM: 6300
+	FPGA_EfanTripLimit_MinRPM: 1900
+	UserRequestable_Dfan_MaxRPM: 0
+	UserRequestable_Dfan_MinRPM: 0
+	UserRequestable_Efan_MaxRPM: 6100
+	UserRequestable_Efan_MinRPM: 2100
+	CellSerialNumber: x0000A1
+	ABIFirmwareVersion: x00
+	CCCType: 27
+	FirmwareVersionMajor: x00
+	FirmwareVersionMinor: xBF
+	ModeFlags: 16
+	NumberOfDUTSuppliesPerSlot: 1
+	NumberOfSupportedEnvs: 12
+	NumberOfSupportedSlots: 12
+	POMResetSource: 0
+	POMStatus: 0
+	POMVersionMajor: 0
+	POMVersionMinor: 0
+	ProductIRCoefficientProfileTableVersion: 0
+	RBFSpecialFunctions: 0
+	RBFVersionMajor: 224
+	RBFVersionMinor: 2
+	Slave1FPGAVersionMajor: 0
+	Slave1FPGAVersionMinor: 0
+	Slave2FPGAVersionMajor: 0
+	Slave2FPGAVersionMinor: 0
+	VoltageMarginingSupported: 0
+CellType: NIMBUS_COMET
+PlugBits: 0x1
+Riser XML: <rimsn type="P7SER0" xml_data_rev="1.20" tla="Unavailable" extension="L3SX0SDXXX" details="">0000A1</rimsn> 
+Riser SN: 0000A1  Type: P7SER0  Extension: L3SX0SDXXX
+Python-3 Mode: False
+VibeLocks {7: 'VIBE', 136: 'VIBE', 10: 'VIBE', 152: 'VIBE', 25: 'VIBE', 30: 'VIBE', 33: 'VIBE', 34: 'CALM', 35: 'CALM', 37: 'VIBE', 39: 'VIBE', 41: 'CALM', 135: 'CALM', 175: ('CALM', True), 50: 'CALM', 51: 'CALM', 180: 'CALM', 55: 'CALM', 189: 'CALM', 194: 'CALM', 198: 'CALM', 75: 'CALM', 212: 'VIBE', 597: 'CALM', 598: 'CALM', 95: 'CALM', 97: 'CALM', 549: 'VIBE', 623: 'VIBE'}
+Aug 07 2024-15:26:51  CPY: (5, 10)  Environment  NIMBUS_COMET  F/W (x00, xBF)  FPGA (xE0, x02)  Slave1-FPGA (x00, x00)  Slave2-FPGA (x00, x00)  API 3.6  PSB x01  cardPN,iPN (NA, NA)  P7SER0.L3SX0SDXXX  SeventhSerialNimbusRiser  MARLINBP.MBP_230901_BV_X0  TaaTProcess None  ESGCommand ESGESlipInCellTransport  Oper COMET  SBR MBP_SLICK_ITC  RestartStatus 0
+DRIVE ATTRIBUTES:
+	3TempMove_ENABLE: 0
+	ACA_COMPATIBLE: 1
+	APA_SERIAL_NUM: 135065XL2
+	ARC_NAME: NONE
+	ARC_RECIPE: NONE
+	ARC_SATE_FLAG: 0
+	ASSIGN_SORT_IF: DISABLED
+	ASSY_DATE: 06-10-24 11:29
+	ATTR_CNT: 216
+	ATTR_OVERRIDE: NONE
+	BIRTH_DATE: 20240610
+	BOT_POGO_CNT: 0
+	BUILD_GROUP: NEW
+	BUILD_VERSION: MARLINBP_1.0
+	BUYOFF_FAIL_CNT: 0
+	BUYOFF_MODE: 0
+	BUYOFF_MODE_CNT: 0
+	BUYOFF_TOTAL_CNT: 0
+	CELLPYVERSION: 23OCT2023(BIN)+P3
+	CLAMP_PART_NUM: 730429700
+	CLEAN_CNT: 4
+	CLEAN_STATUS: CLEAN
+	CLOSED_SETS_GAP: 1.16273629594582
+	CLOSED_SETS_PSA: -0.683755254378724
+	CLOSED_SETS_RSA: -0.311918388963008
+	CLOSED_SETS_Z: -7.2284
+	CMNAME: POPRIG01.TEP.THAI.SEAGATE.COM
+	CMPLATFORM: I5-Q370
+	CMS_CONFIG: MBP_230901_BV_X0
+	CMS_FAMILY: MARLINBP
+	CMVERSION: 23.01-03 / 23OCT2023(BIN)
+	CONSEC_FAIL_CNTS: 0-0-0-20
+	CONT_FAIL_CNT: 0
+	COVER_SERIAL_NUM: 6FET651R
+	CPU_ET_PERCENT: 0.8503
+	CROSSTRACK_BIAS: 0.015
+	CURRENT_LOC: IN_TRANSIT
+	C_SLD_CLR_PNC: 0.334
+	C_S_PITCH_PNC: NONE
+	C_S_POCKET_PNC: NONE
+	C_S_ROLL_PNC: NONE
+	DISC_BUFF_CNT: 0
+	DISC_CNT_DOWN: 21
+	DISC_CNT_UP: 0
+	DISC_LOTID: EP04D
+	DISC_MRAD_CNT_DN: 0
+	DISC_MRAD_CNT_UP: 0
+	DISC_MRAD_FLG_DN: 4
+	DISC_MRAD_FLG_UP: 4
+	DISC_PARK_FLG: 0
+	DISC_PART_NUM: 205839917
+	DISC_SERIAL_NUM: EP04D000011WY3C2807
+	DISC_SIDE_GOOD: BOTH
+	DL_CFW_OAI: E2XKBE6.STF2.03008886.00163526.C
+	DL_RAP: EAGLERAYJANUSMC_R1_4004011209170
+	DL_SVO_SSA: EAGLERAYBPC1D_B700_CMB.LOD
+	DT_ROLL_FAIL_CNT: 0
+	EQUIP_ID_REJECT: DIAG_APP
+	EQUIP_TYPE: CP2
+	E_AND_R: 0
+	FAIL_CODE: 0
+	FAIL_DETAILS: NONE
+	FAIL_FLAG_0: 0-0-0
+	FAIL_FLAG_1: 0-0-0
+	FAIL_FLAG_2: 0-0-0
+	FAIL_FLAG_3: 0-0-2
+	FAIL_FLAG_4: 0-0-0
+	FAIL_TEST: NONE
+	FFW_ET_SORT: F
+	FIS_DATA_DELAY: FALSE
+	FOF_RESTART: 0
+	FW_COEF_VER: E2XKBE6_OWL07-COE01
+	GRAM_LOAD: 2.409
+	HD_NUM: O5RHRX0JI2
+	HOSTVERSION: 23.01-02-P4 / 24OCT2023(BIN)
+	I2C_SN: B04D062F
+	ISI_AMP_AT_ET: 14300.71
+	ISI_ASYM_AT_ET: 5.25
+	ISI_RES_AT_ET: 367.98
+	IW_OS_DUR_RT: DEFAULTS
+	JOB_ORDER: NONE
+	LAST_LOAD_ID: 240614114930_ZCL106
+	LDU_FF_ITH: NONE
+	LINE_NUM: 951
+	LUL_CAL_ID: 240610090941_ZCL106
+	LUL_FAIL: 0
+	LUL_FAIL_CNT: 0
+	LUL_FAIL_HIST: NONE
+	LUL_FAIL_TXT: NONE
+	LUL_RECIPE_HIST: NONE
+	LUL_SOFTWARE_REV: 24.05.27.00E
+	LUL_UPDATE_TIME: OMEGA_106_240614_114936
+	MBA_PART_NUM: 749814400
+	MBA_REV_NUM: C
+	MDVT_RUN_CNT: 1-1
+	MD_FAIL_CNT: 10001
+	MD_MODE: DEVELOPMENT
+	MD_REJECT_REASON: PASS
+	MD_RELEASE_CNT: 6
+	MD_RUN_CNT: 50
+	MD_SERVICE_CNT: 4
+	MD_STATUS: PRODUCTION
+	MD_TEST_CNT: 235
+	MFG_EVAL: MBP_230901_BV_X0
+	MODEL_NUM: 
+	MOTOR_HEIGHT: 102.84613
+	MOTOR_PARALLEL: 8.69057
+	MPFT_COEF_VER: V1_0
+	NEXT_CTRL_STR: NONE
+	NEXT_LOC: ASRS
+	NEXT_TLA_NUM: 760675152
+	OCA_ADJUST_CNT: 0
+	OCA_OFFSET_FINAL: -0.0592
+	OCA_OSRTG_FINAL: 1.348
+	OPENED_SETS_GAP: 1.33180592519999
+	OPENED_SETS_PSA: -1.0102411639479
+	OPENED_SETS_RSA: -0.157538499921557
+	OPENED_SETS_Z: -7.2113
+	OSVERSION: 4.18.0-477.10.1.EL8_8.X86_64
+	PARK_DECK_IF: DISABLED
+	PART_NUM: ?
+	PA_CH_USED: 8
+	PB_PART_NUM: 749814652
+	PCBA_PART_NUM: 100871075
+	PCBA_PIC_COD_VER: 5.1.18_1.2
+	PCBA_REV_NUM: A
+	PCBA_SERIAL_NUM: 3972854J
+	PF4_PACKAGE: TIM_MADSEN
+	POST_Y_ALIGNMENT: -0.000284649109137715
+	PRETEST_ACTS: 0
+	PREV_HD_NUM: O5RHRX0JI2
+	PRIME: Y
+	PRIME?: Y
+	PRODUCT: MARLINBP
+	PRODUCT_NAME: MARLINBP
+	PRT_LOAD_INDEX: 0
+	PRT_POSTSA_INDEX: 0
+	PRV_EQUIP_ID: POPRIG01
+	PV_REJECT_REASON: FA_DBG
+	PYTHONVERSION: 2.7.18
+	RECEVIED_DATE: 09-29-2023 12:33
+	RECIPE: ACC_PASS
+	RECIPE_REJECT: ACC_PASS
+	RELOAD_INDEX: 0
+	RESTART_DELAY: 2080196
+	REWORK_CNT: 1
+	RISERTYPE: P7SER0.L3SX0SDXXX
+	ROSA_OPEN_COUNT: 274
+	ROSA_SERIAL_NUM: 3HP2261R
+	RPSA_RETRY_COUNT: 0
+	RSLT_FILE_BYTES: 72710
+	RTPAD_STATUS: 1
+	RTPAD_TOT_COUNT: 108
+	RWK_CYCLE: 0
+	SCRIPT_CTRL_STR: PROD
+	SERVO_CAL_PASSED: DONE
+	SETS_CNT: 2
+	SETS_ID: 2449030719598326759880000DN
+	SET_OPER: COMET
+	SIC_ERROR_CODE: 0
+	SKL_RERUN_CNT: 0
+	SKL_RUNTYPE: PRIME
+	SLDR_AKL_BP: 24.937
+	SLDR_BIN: B
+	SLDR_CHUNK_ID: NL2NAO8
+	SLDR_LOT_ID: NL2NAORN7
+	SLDR_PART_NUM: 100851649
+	SLDR_RES: 367.98
+	SLDR_RES_RD2: NONE
+	SLDR_TAB: DN
+	SLIDER_D_UP_TRK: -0.00185479652656153
+	SLIDER_D_X_TRK: 0.000935257972330397
+	SLIDER_PSA: -4.84202189454663E-09
+	SLIDER_RSA: -0.135781480562514
+	SLIDER_SETS_GAP1: -0.000528889886299233
+	SLIDER_SETS_GAP2: 0.00592944344703977
+	SLIDER_SETS_GAP3: 0.0152372232196309
+	SLIDER_SETS_GAP4: 0.00877888988629189
+	SLIDER_SETS_PSA: 0.591962674608567
+	SLIDER_SETS_RSA: -0.897512537132357
+	SLIDER_TWIST: 0.111832914474817
+	SLRSA_PERFORM: POOR
+	SORT_LEVEL: 8
+	SPACER_PART_NUM: 753686900
+	SSA_INST_CNT: 4
+	SSA_MEASURE: YES
+	SSA_PSA: 1.17462132394271
+	SSA_RSA: -0.295279058932951
+	SS_PITCH_DELTA: -0.591962679450589
+	SS_ROLL_DELTA: 0.761731056569843
+	START_TIME: 1723018985.36
+	STATE_FLG: 0
+	STROKE_PCT: 100
+	SUB_BUILD_GROUP: MBP_SLICK_ITC
+	TAB: DN
+	TDCI_COMM_LIFE: 0
+	TDCI_COMM_NUM: 0
+	TEST_RUN_GRADE: 8
+	TEST_TIME: 10.78
+	TGTCLR2_W_PW_R: DISABLED
+	TGTCLR_W_PW_R: DEFAULTS
+	TLA: 760675152
+	TLA_NUM: 760675152
+	TMWI: TESMB01
+	TOP_POGO_CNT: 437
+	TO_SUB_INV_CODE: WIPT
+	TRAY_SORT_MAP: DISABLED
+	TST_STOP_CNTR: DISABLED
+	TST_ZN_OFST_CNT: 0-0-0-0-1-0-0-0-0-0-0-0-0-0-0
+	TST_ZONE_OFST: ZNPSN_108
+	UNLOAD_TIME: 0
+	UPATTR_ID: 717465
+	UVCM_PART_NUM: 750528000
+	VALID_OPER: COMET
+	WAF_BLMR_REF_RES: NONE
+	WAF_BLMR_RES: NONE
+	WAF_RDR_HTR_RES: 46.7464
+	WAF_TAD_RES: 60.023
+	WAF_WTR_HTR_RES: 29.596
+	WAF_WTR_RES: 1.33
+	WORK_ORDER: CMTMB99D
+	WORK_ORDER_VER: 9
+	WPH_WHO_RH_CLR_A: MEASURE
+	XMLRPC_BYTES: 3417
+	Y_INSTALL_BIAS: 0.0167604170524008
+Aug 07 2024-15:26:54  Running Default PreScript
+Aug 07 2024-15:26:54  birthtime : 1723019214.51
+Aug 07 2024-15:26:54  ChamberType: 
+Aug 07 2024-15:26:54  Maximum XML fileSize: 1000000
+Aug 07 2024-15:26:54  CarrierSystem: N
+Aug 07 2024-15:26:54  oper: COMET  operList: ['COMET']
+Aug 07 2024-15:26:54  Drive Interface: SAS
+Aug 07 2024-15:26:54  Product class: BC
+ 
+Aug 07 2024-15:26:55  *********************************  ConfigVars  *********************************
+                       AllowAllPartNums     : True
+                       AutoCommitOff        : False
+                       ConfigChange         : NONE
+                       DataCollection       : False
+                       DepopExemptECs       : None
+                       DepopExemptSBRs      : None
+                       DisableElecDepop     : True
+                       ESCheckStation       : []
+                       EnableForceDepop     : False
+                       EnableThermisterChk  : False
+                       EvalMode             : OFF
+                       ForceDepopPN         : False
+                       GetNewWWN            : False
+                       MinSetTemp           : 30
+                       NEW_FANSPEED         : 0
+                       PQMSbrList           : []
+                       ParamCodeFile        : ('MBP_230901_BV_X0', 'param_cd.h')
+                       Production           : False
+                       PythonSyntax         : strict
+                       ReplugErrList        : [11045, 11061, 11105, 11197, 14209]
+                       ResetWaterfall       : False
+                       RunCCV               : False
+                       ScriptTimeout        : 3600
+                       ShowparmXRef         : False
+                       SkipB2D2BySn         : []
+                       SkipStates           : []
+                       TestCell             : False
+                       script               : ('MBP_230901_BV_X0', 'BootScript.py')
+ 
+Aug 07 2024-15:26:55  ****************************  HDA TEST Config Info  ****************************
+                       CM Rev               : 23.01-03 / 23OCT2023(bin)
+                       Host Rev             : 23.01-02-P4 / 24OCT2023(bin)
+                       EQP_ID               : POPRIG01
+                       SLT                  : 2003100
+                       Product              : MARLINBPLOS
+                       Config               : MBP_230901_BV_X0
+                       SCN                  : ?
+                       Serial No            : B04D062F
+                       SBR                  : MBP_SLICK_ITC
+                       FIS Rim Type         : None
+                       Host Rim Type        : COMET
+                       ChangeList           : ?
+                       Branch Name          : ?
+                       Workspace Name       : Tim_Madsen
+ 
+Aug 07 2024-15:26:55  **************************  RequestService for COMET  **************************
+Aug 07 2024-15:26:55  ****************************  'proc.var's for PN ?  ****************************
+                       CFW_TstTmoutPercent  : 0.0
+                       VBAR_SA_AUDITING     : True
+                       VBAR_SA_DEBUG        : False
+                       VBAR_SA_FtBPIcRpt    : True
+                       VBAR_SA_GAP_CAL      : True
+                       VBAR_SA_PERF_TEST    : True
+                       VBAR_SA_PI           : True
+                       VBAR_SA_POWERCYCLE   : True
+                       VBAR_SA_SAVESETTING  : True
+                       allowRecErr          : 3
+                       custName             : STD
+                       cutLoops             : 1
+                       drvIntf              : SAS
+                       drvType              : HDD
+                       fullFormat           : 0
+                       gListMax             : 2
+                       lbaMargin            : 10000
+                       lbaOffset            : 31223808
+                       lbaP1                : 0
+                       lbaP2                : 1
+                       numBlocks            : 18446744073709551615
+                       numHeads             : 1
+                       physNumHeads         : 16
+                       prodClass            : BC
+                       seaSerial            : True
+                       sectorFamily         : 
+                       tempFanProfile       : 2TEMP
+ 
+Aug 07 2024-15:26:55  *****************************  Firmware for PN ?  ******************************
+                       BDG                  : Unlock_MakaraSATA_ALL_ToFrom_ALL.lod
+                       BPI                  : BPI_ERBP_R1_4003010D091300_62pct_221uin_sep_20uin_tol.bin
+                       BPI_GOBY             : BPI_Goby2_400700000A1300.bin
+                       CFW_DR1              : ('EBAKBG3.STF1.01795387.00716670.S_OVL.LOD', 'EBAKBG3.STF1.01795387.00716670.CFW.LOD')
+                       CFW_OAI              : E2XKBE6.STF2.03008886.00163526.CFW.LOD
+                       IMG_SSA              : ERBP_COMET_R12F_B02T131P_12_23_20.BIN
+                       RAP                  : EagleRayJanusMC_R1_40040112091700.LOD
+                       SVO_HGA              : eagleraybpc1d_5c01_cmb.lod
+                       SVO_SSA              : eagleraybpc1d_b700_cmb.lod
+                       TXT_TPM              : E2XKBE6.STF2.02075600.00163526.TXT_TPM.TXT
+Aug 07 2024-15:26:55  Skip TPMFile
+ 
+   INFO: MD_Utilities called
+---
+   set_stopWatch -- TOTAL_TIME  --set--
+---
+P904_SCRIPT_REVISION:
+  MONTH  DAY  YEAR    FULL_DATE     APPLICATION_DESCRIPTION
+     03   25  2024   03-25-2024            MARLINBPLOS_BASE
+:::
+   NEXT_CTRL_STR = --NONE--
+   insertTime = 0
+   DEBUG: insertTime is not available from host
+   INFO_MESSAGE: Script is Runing in PRODUCTION mode ===
+---
+   set_stopWatch -- INIT_TIME  --set--
+---
+Aug 07 2024-15:26:55  ---------------------- - - - -    INIT : BEGIN    - - - - ----------------------
+---
+   I2C_SN =   B04D062F
+   hex_rev_I2C  =  [5, 1, 18]     param_rev_I2C  =  [1, 2]
+   PIC_code_ver_str =  5.1.18
+---
+P_HD_NUM_MINIDECK_INFO:
+      HD_NUM    PRV_HD_NUM    MD_SERIAL_NUM
+  O5RHRX0JI2    O5RHRX0JI2         B04D062F
+:::
+   RTPAD_STATUS = 1    
+   RTPAD_TOT_COUNT = 108 
+   work_order = CMTMB99D       
+   work_order_short = CMT 
+   script_test_mode = EVAL 
+   MD_FAIL_CNT = 10001 
+   MPFT_Reset_Flag = 9 
+   MD_BUYOFF_CNT = 1 
+   MD_RELEASE_CNT = 6 
+FAIL_FLAG_0 = 0-0-0
+changAttrFrom16bitTo32bit attrVal = 0-0-0
+FAIL_FLAG_1 = 0-0-0
+changAttrFrom16bitTo32bit attrVal = 0-0-0
+FAIL_FLAG_2 = 0-0-0
+changAttrFrom16bitTo32bit attrVal = 0-0-0
+FAIL_FLAG_3 = 0-0-2
+changAttrFrom16bitTo32bit attrVal = 0-0-2
+FAIL_FLAG_4 = 0-0-0
+changAttrFrom16bitTo32bit attrVal = 0-0-0
+---
+   init_znPsn_available()
+Aug 07 2024-15:26:55  There is a good psn available
+   DEBUG: ZnPsn = 108
+   DEBUG: cur_zn_psn_index = 8
+   DEBUG: zn_psn_rotation = [44, 52, 60, 68, 76, 84, 92, 100, 108, 116, 124, 132, 140, 148, 156]
+   DEBUG: total list = [116, 124, 132, 140, 148, 156, 44, 52, 60, 68, 76, 84, 92, 100, 108, 116, 124, 132, 140, 148, 156]
+   NEW: ZnPsn = 116
+   print_ZnPsn_report()
+   ZnPsn_list = [44, 52, 60, 68, 76, 84, 92, 100, 108, 116, 124, 132, 140, 148, 156]
+   ZnPsn_fail_cnt_list = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+   good_ZnPsn_list = [44, 52, 60, 68, 76, 84, 92, 100, 108, 116, 124, 132, 140, 148, 156]
+   current Zone postion r1_DX = 116,  status_DX = 116
+   good zone position avalible = [44, 52, 60, 68, 76, 84, 92, 100, 108, 116, 124, 132, 140, 148, 156] 
+   current Zone postion status_DX = 116
+   WAF_WR_RES = 1.33 
+   WAF_WH_RES = 29.6 
+   WAF_RH_RES = 46.75 
+   WAF_TA_RES = 60.02 
+   EST_BP_AT_ET =  
+   WAF_BLMR_RES =  
+   WAF_BLMR_REF_RES =  
+   ISI_ASYM_AT_ET = 5.25 
+   ISI_ASYM_AT_ET = 5.25 
+   deck_parking_code_list =  []
+---
+   assign_if_code_list =  []
+   assign_if_sort_list =  []
+---
+Aug 07 2024-15:26:56  DriveOn(5000,12000,1,3300,{}) at Wed Aug  7 15:26:55 2024      3V: (0 mV, 0 mA)  5V: (0 mV, 0 mA)  12V: (0 mV, 0 mA)
+Aug 07 2024-15:26:56  Baud Return Data(raw)   : '\x03\x00\x03\x10'
+Aug 07 2024-15:26:59  Baud Return Data(raw)   : '\x03\x00\x03\x10'
+Aug 07 2024-15:27:02  Baud Rate: 1228000
+
+   I2C_temp_ctrl(Tcrit = 30.0, HtrPwr = OFF)
+   WriteI2CDevice(chipAddr = 0x49, regAddr = 0x08, data = 0x0F)
+   WriteI2CDevice(chipAddr = 0x49, regAddr = 0x09, data = 0x00)
+   WriteI2CDevice(chipAddr = 0x49, regAddr = 0x0A, data = 0x00)
+   WriteI2CDevice(chipAddr = 0x49, regAddr = 0x03, data = 0x10)
+   SetHtrPWM(bits = 1)
+   I2C_temp_ctrl(Tcrit = 52.0, HtrPwr = ON)
+   WriteI2CDevice(chipAddr = 0x49, regAddr = 0x08, data = 0x1A)
+   WriteI2CDevice(chipAddr = 0x49, regAddr = 0x09, data = 0x00)
+   WriteI2CDevice(chipAddr = 0x49, regAddr = 0x0A, data = 0x00)
+   WriteI2CDevice(chipAddr = 0x49, regAddr = 0x03, data = 0x10)
+   SetHtrPWM(bits = 255)
+Aug 07 2024-15:27:02  Execution Info: scriptFunctions.py, INIT, 850, self.St(test_num=0, prm_name='prm_000_GetParams', timeout = 300)
+Aug 07 2024-15:27:02  **PRM_NAME="prm_000_GetParams"
+Aug 07 2024-15:27:02  5V Margin: 0.00  12V Margin: 0.00 Current Temp: 49.4
+Aug 07 2024-15:27:02  Execution Parameter: 0: prm_000_GetParams
+Aug 07 2024-15:27:02   ----->  S T A R T I N G   st(0)  baud 1228000
+Aug 07 2024-15:27:02  Parameters==>  ([0], [], {'timeout': 300})
+Aug 07 2024-15:27:02  **SPC_ID32=None  CMT=None
+Aug 07 2024-15:27:02  **TestCompleted=0,0.32
+Aug 07 2024-15:27:02   F I N I S H E D   Testing st(0), Test Stat: 0, Test Time: 0.32  <-----
+
+Aug 07 2024-15:27:02  Execution Info: scriptFunctions.py, INIT, 855, self.St(test_num=166, prm_name='prm_166_GetTestList', Cwrd1=0x0200, failSafe=True, timeout=300,loadTables='P166_TESTS_AVAILABLE')
+Aug 07 2024-15:27:02  **PRM_NAME="prm_166_GetTestList"
+Aug 07 2024-15:27:02  5V Margin: 0.00  12V Margin: 0.00 Current Temp: 49.4
+Aug 07 2024-15:27:02  Execution Parameter: 166: prm_166_GetTestList
+Aug 07 2024-15:27:02   ----->  S T A R T I N G   st(166)  baud 1228000
+Aug 07 2024-15:27:02  Parameters==>  ([166], [], {'Cwrd1': 512, 'timeout': 300})
+Aug 07 2024-15:27:02  **SPC_ID32=None  CMT=None
+Aug 07 2024-15:27:02  **TestCompleted=166,0.07
+Aug 07 2024-15:27:02   F I N I S H E D   Testing st(166), Test Stat: 0, Test Time: 0.07  <-----
+
+---
+DISC_LOTID = EP04D
+Spilt DISC_LOTID = EP04D
+Spilt DISC_LOTID = EP04
+---
+Triplet By Medialot
+    Media lot EP04 tab DOWN exist in compensation list
+    w_triplet = (85, 25, 5)
+---
+---
+Media Compensation
+    Media lot EP04 tab DOWN exist in compensation list
+    mediacomp_flg = 1, wpe_com = 0, ber_com = 0, hms_com = 0, tpi_com = 1, bpi_com = 1, adc_com = 0 
+---
+Aug 07 2024-15:27:02  ----------------------- - - - - INIT : COMPLETE - - - - ------------------------
+ 
+Aug 07 2024-15:27:02  MPPLR = None
+Aug 07 2024-15:27:02  **TestCompleted=172,0.04
+Aug 07 2024-15:27:02  **SPC_ID32=100
+ 
+---
+   set_stopWatch -- INIT_TIME  --end--
+---
+---
+   set_stopWatch -- PROD_TIME  --set--
+---
+Aug 07 2024-15:27:02  ------------------- - - - -    PRODUCTION : BEGIN    - - - - -------------------
+Check FFW_ET_SORT
+   Change FFW_ET_SORT to NONE 
+DEBUG: Digest_loader_attr LULFC =        0
+---
+   Error encountered while trying to process a loader-supplied attribute
+---
+---
+   set_stopWatch -- T_TEMPHOLD  --set--
+---
+Start temperature ramp, B04D062F
+Aug 07 2024-15:27:03  **TestCompleted=172,0.03
+   T172 deck temperature = 49.8 deg C
+Aug 07 2024-15:27:03  Execution Info: ttddo-cms-ftp1.tep.thai.seagate.com|00.00.02|cms|merlin|MARLINBP|script|MBP_230901_BV_X0|COMET.py|00.00.02|COMET.py|2024-08-07 15:26:40.0, PRODUCTION, 3602, proc.St(prm_011_rd_svo_ramp_load_cnt, loadTables = 'P011_SV_RAM_RD_BY_OFFSET', suppressResults = False, failSafe = True)
+Aug 07 2024-15:27:03  **PRM_NAME="prm_011_rd_svo_ramp_load_cnt"
+Aug 07 2024-15:27:03  5V Margin: 0.00  12V Margin: 0.00 Current Temp: 49.4
+Aug 07 2024-15:27:03  Execution Parameter: 11: prm_011_rd_svo_ramp_load_cnt
+Aug 07 2024-15:27:03   ----->  S T A R T I N G   st(11)  baud 1228000
+Aug 07 2024-15:27:03  Parameters==>  ([11], [], {'Cwrd1': 512, 'SymblOfst': 35, 'AccssTyp': 2, 'timeout': 20, 'ParmCtrl': 2})
+Aug 07 2024-15:27:03  **SPC_ID32=None  CMT=None
+Aug 07 2024-15:27:03  **TestCompleted=11,0.05
+Aug 07 2024-15:27:03   F I N I S H E D   Testing st(11), Test Stat: 0, Test Time: 0.05  <-----
+
+   read_SAP_ramp_load_cnt(): 0
+Aug 07 2024-15:27:03  Execution Info: ttddo-cms-ftp1.tep.thai.seagate.com|00.00.02|cms|merlin|MARLINBP|script|MBP_230901_BV_X0|COMET.py|00.00.02|COMET.py|2024-08-07 15:26:40.0, PRODUCTION, 3611, proc.St(prm_011_rd_svo_ramp_load_cnt, SymblOfst = 933, loadTables = 'P011_SV_RAM_RD_BY_OFFSET', suppressResults = False, failSafe = True)
+Aug 07 2024-15:27:03  **PRM_NAME="prm_011_rd_svo_ramp_load_cnt"
+Aug 07 2024-15:27:03  5V Margin: 0.00  12V Margin: 0.00 Current Temp: 49.4
+Aug 07 2024-15:27:03  Execution Parameter: 11: prm_011_rd_svo_ramp_load_cnt
+Aug 07 2024-15:27:03   ----->  S T A R T I N G   st(11)  baud 1228000
+Aug 07 2024-15:27:03  Parameters==>  ([11], [], {'Cwrd1': 512, 'SymblOfst': 933, 'AccssTyp': 2, 'timeout': 20, 'ParmCtrl': 2})
+Aug 07 2024-15:27:03  **SPC_ID32=None  CMT=None
+Aug 07 2024-15:27:03  **TestCompleted=11,0.04
+Aug 07 2024-15:27:03   F I N I S H E D   Testing st(11), Test Stat: 0, Test Time: 0.04  <-----
+
+   island_fencebreak_attempt_counter(): 0
+   SetHtrPWM(bits = 1)
+Aug 07 2024-15:27:03  Execution Info: ttddo-cms-ftp1.tep.thai.seagate.com|00.00.02|cms|merlin|MARLINBP|script|MBP_230901_BV_X0|COMET.py|00.00.02|COMET.py|2024-08-07 15:26:40.0, PRODUCTION, 15065, EC = proc.St(prm_011_start_motor, failSafe = True)
+Aug 07 2024-15:27:03  **PRM_NAME="prm_011_start_motor"
+Aug 07 2024-15:27:03  5V Margin: 0.00  12V Margin: 0.00 Current Temp: 49.4
+Aug 07 2024-15:27:03  Execution Parameter: 11: prm_011_start_motor
+Aug 07 2024-15:27:03   ----->  S T A R T I N G   st(11)  baud 1228000
+Aug 07 2024-15:27:03  Parameters==>  ([11], [], {'ParmCtrl': 2, 'SvoCmd': (768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), 'timeout': 40})
+Aug 07 2024-15:27:03  **SPC_ID32=None  CMT=None
+Aug 07 2024-15:27:05  **TestCompleted=11,2.28
+Aug 07 2024-15:27:05   F I N I S H E D   Testing st(11), Test Stat: 0, Test Time: 2.28  <-----
+
+   SetHtrPWM(bits = 255)
+Aug 07 2024-15:27:05  **TestCompleted=172,0.03
+   T172 deck temperature = 49.8 deg C
+P902_DECK_TEMP_VS_TIME_DATA:
+  TIME_SEC  T172_TEMP_C   T1_C   T2_C  TGT_TEMP_C
+       0.0         49.8   49.6    0.0        50.0
+:::
+Finish temperature ramp, B04D062F
+---
+   set_stopWatch -- T_TEMPHOLD  --end--
+---
+   DEBUG: Good Zone Position list = [44, 52, 60, 68, 76, 84, 92, 100, 108, 116, 124, 132, 140, 148, 156]
+   No single Resistance param tested, Do nothing to MPFT_RES
+   No dMRE testing, Do nothing to MPFT_DRES
+   No T56_UACT testing, Do nothing to MPFT_PZT
+   No single MPFT_SERVO testing, Do nothing to MPFT_SERVO
+   No T135 Power to Contact testing, Do nothing to MPFT_CD
+   No T135 Power to Contact testing, Do nothing to MPFT_IPD5
+   No LASER TAA testing, Do nothing to MPFT_LASER
+   No VBAR testing, Do nothing to MPFT_ADC_NULL
+   No DETCR_SCAN(MXTA) testing, Do nothing to MPFT_MXTA
+   update_MPFT_cnts() : No update RECIPE required
+FAILFLAG_TABLE_DATA:
+               FAIL_FLAG_0               FAIL_FLAG_1               FAIL_FLAG_2               FAIL_FLAG_3               FAIL_FLAG_4
+                     0-0-0                     0-0-0                     0-0-0                     0-0-4                     0-0-0
+:::
+FAIL_FLAG_0 : MPFT_COM_TEMP - MPFT_THETA - MPFT_RES
+FAIL_FLAG_1 : MPFT_DRES - MPFT_PZT - MPFT_SERVO
+FAIL_FLAG_2 : MPFT_CD - MPFT_SUMEC - MPFT_IPD5
+FAIL_FLAG_3 : DUMMY10 - DUMMY11 - DUMMY12
+FAIL_FLAG_4 : DUMMY13 - DUMMY14 - DUMMY15
+--- sum_WPOH_MS = 0   additional write_revs tally = 0
+---
+P990_TEST_DATA_AND_SPECS:
+   CODE   TRACK  EXPANDED_TEXT_DESCRIPTION_OF_EACH_PARAMETER    VALUE  SORT  FAILCODE  SORT2_L SORT2_H  SORT3_L SORT3_H  SORT4_L SORT4_H  SORT5_L SORT5_H  SORT6_L SORT6_H  SORT7_L SORT7_H  SORT8_L SORT8_H
+  LULFC  LOADER               LOADER_LUL_FAIL_CODE_ATTRIBUTE        0            -                                                                                                                          
+  XTRKB  LOADER          LOADER_CROSSTRACK_BIAS_ATTRIBUTE_UM     15.0            -                                                                                                                          
+  YBIAS  LOADER           LOADER_Y_INSTALL_BIAS_ATTRIBUTE_UM    16.76            -                                                                                                                          
+  RELIX  LOADER                LOADER_RELOAD_INDEX_ATTRIBUTE        0            -                                                                                                                          
+  OSETZ  LOADER            LOADER_OPENED_SETS_Z_ATTRIBUTE_MM  -7.2113            -                                                                                                                          
+  CSETZ  LOADER            LOADER_CLOSED_SETS_Z_ATTRIBUTE_MM  -7.2284            -                                                                                                                          
+  OSETG  LOADER          LOADER_OPENED_SETS_GAP_ATTRIBUTE_MM   1.3318            -                                                                                                                          
+  CSPSA  LOADER         LOADER_CLOSED_SETS_PSA_ATTRIBUTE_DEG  -0.6838            -                                                                                                                          
+  CSRSA  LOADER         LOADER_CLOSED_SETS_RSA_ATTRIBUTE_DEG  -0.3119            -                                                                                                                          
+  CSETG  LOADER          LOADER_CLOSED_SETS_GAP_ATTRIBUTE_MM   1.1627            -                                                                                                                          
+  THETA  LOADER            LOADER_SLIDER_THETA_ATTRIBUTE_DEG   0.1118     8      -       -1.25    1.25    -1.25    1.25    -1.25    1.25    -1.25    1.25    -1.25    1.25    -1.25    1.25    -1.25    1.25
+  UPTRK  LOADER          LOADER_SLIDER_D_UP_TRK_ATTRIBUTE_UM    -1.85            -                                                                                                                          
+  XTRKD  LOADER           LOADER_SLIDER_D_X_TRK_ATTRIBUTE_UM     0.94            -                                                                                                                          
+  POSTY  LOADER         LOADER_POST_Y_ALIGNMENT_ATTRIBUTE_UM    -0.28            -                                                                                                                          
+  OSPSA  LOADER         LOADER_OPENED_SETS_PSA_ATTRIBUTE_DEG  -1.0102            -                                                                                                                          
+  OSRSA  LOADER         LOADER_OPENED_SETS_RSA_ATTRIBUTE_DEG  -0.1575            -                                                                                                                          
+  SSPSA  LOADER         LOADER_SLIDER_SETS_PSA_ATTRIBUTE_DEG    0.592            -                                                                                                                          
+  SSRSA  LOADER         LOADER_SLIDER_SETS_RSA_ATTRIBUTE_DEG  -0.8975            -                                                                                                                          
+  SLPSA  LOADER              LOADER_SLIDER_PSA_ATTRIBUTE_DEG     -0.0            -                                                                                                                          
+  SLRSA  LOADER              LOADER_SLIDER_RSA_ATTRIBUTE_DEG  -0.1358            -                                                                                                                          
+  SETG1  LOADER                   LOADER_SLIDER_SETS_GAP1_UM    -0.53            -                                                                                                                          
+  SETG2  LOADER                   LOADER_SLIDER_SETS_GAP2_UM     5.93            -                                                                                                                          
+  SETG3  LOADER                   LOADER_SLIDER_SETS_GAP3_UM    15.24            -                                                                                                                          
+  SETG4  LOADER                   LOADER_SLIDER_SETS_GAP4_UM     8.78            -                                                                                                                          
+  SLDR0  LOADER         SLDR_RES_LOADER_ATTRIB_FROM_ISI_OHMS    368.0     8      -          20    2000       20    2000       20    2000       20    2000       20    2000       20    2000       20    2000
+  RSASP  LOADER            SLRSA_SAMPLING_OR_100_MEASUREMENT        0            -                                                                                                                          
+  TEMPI    RAMP          INITIAL_DECK_TEMPERATURE_DEG_C_T172     49.8            -                                                                                                                          
+  TRSEC    RAMP                    TEMPERATURE_RAMP_TIME_SEC        0     8      -           0    1800        0    1600        0    1400        0    1200        0    1000        0     900        0     800
+  SUMEC     -                  SUM_OF_ERROR_CODE_OCCURRENCES        0     8      -           0      22        0      22        0      22        0      22        0      22        0      22        0      22
+  WPSEC     -         TOTAL_HAMR_WRITE_POWER_ON_TIME_SECONDS      0.0            -                                                                                                                          
+  1ZONE     -                           FIRST_TEST_DATA_ZONE       59            -                                                                                                                          
+  1ZPSN     -                 FIRST_TEST_ZONE_POSITION_0_199      116            -                                                                                                                          
+  GRADE     -                                 TEST_RUN_GRADE        8     8
+  CNFIG     -            CMS_CONFIGURATION_USED      MBP_230901_BV_X0
+  REVDT     -              SCRIPT_REVISION_DATE            03-25-2024
+  SCTRL     -         SCRIPT_CTRL_STR_ATTRIBUTE                  PROD
+   DATE     -                             MM-DD-YYYY       08-07-2024
+   TIME     -                        ENDING_HH:MM:SS         15:27:05
+  EXPID     -     EXPER_ID_ATTRIBUTE                             NONE
+  RTSEC     -              COMET.PY_RUN_TIME_SECONDS               10
+   HOST     -                                HOST_ID         POPRIG01
+   CELL     -                            CELL_NUMBER          2003100
+  HDNUM     -        HD_NUM_ATTRIBUTE_FIRST_10_CHARS       O5RHRX0JI2
+  CKNUM     -              LAST_2_IF_12_HD_NUM_CHARS             NONE
+  SSORT     -            SLIDER_SORT_LEVEL_ATTRIBUTE                8
+   MDSN     -                   MINI_DECK_SERIAL_NUM         B04D062F
+  I2CSN     -          INTERNAL_MINI_DECK_SERIAL_NUM         B04D062F
+  PICDV     -                       PIC_CODE_VERSION           5.1.18
+  PICPV     -                      PIC_PARAM_VERSION       5.1.18_1.2
+  PTACT     -                 PRETEST_ACTS_ATTRIBUTE                0
+  TLA_N     -            MINI_DECK_TLA_NUM_ATTRIBUTE        760675152
+  APASN     -     ACTUATOR_PIVOT_ASSEMBLY_SERIAL_NUM        135065XL2
+    TAB     -                          MINI_DECK_TAB             DOWN
+  DSCNT     -       LOAD_TO_DISC_CNT_FOR_CURRENT_TAB               21
+  MDCNT     -                  MD_TEST_CNT_ATTRIBUTE              235
+  PA_CH     -                   PA_CH_USED_ATTRIBUTE                8
+  DTAIL       -                       FAIL_DETAILS_ATTRIBUTE - -                 NONE
+  EC_S8       -          ERROR_CODES_FOR_SLIDER_SORT_LEVEL_8      -       -      NONE
+  EC_S7       -          ERROR_CODES_FOR_SLIDER_SORT_LEVEL_7      -       -      NONE
+  EC_S6       -          ERROR_CODES_FOR_SLIDER_SORT_LEVEL_6      -       -      NONE
+  EC_S5       -          ERROR_CODES_FOR_SLIDER_SORT_LEVEL_5      -       -      NONE
+  EC_S4       -          ERROR_CODES_FOR_SLIDER_SORT_LEVEL_4      -       -      NONE
+  EC_S3       -          ERROR_CODES_FOR_SLIDER_SORT_LEVEL_3      -       -      NONE
+  EC_S2       -          ERROR_CODES_FOR_SLIDER_SORT_LEVEL_2      -       -      NONE
+  NULLS       -                               ALL_NULL_CODES      -       -      NONE
+  FAILS       -                             ALL_FAIL_DETAILS      -       -      NONE
+  CONTF       -                      CONT_FAIL_CNT_ATTRIBUTE        0
+  LFCNT       -                       LUL_FAIL_CNT_ATTRIBUTE        0
+  FCNTS       -                   CONSEC_FAIL_CNTS_ATTRIBUTE 0-0-0-20 disc-servo-ALL-MAX consecutive failures
+:::
+P991_TEST_DATA:
+         HD_NUM CK_NUM   EXPER_ID_ATTRIBUTE CMS_CONFIGURATION_USED SCRIPT_REV_DATE SCRIPT_CTRL_STR STATE_FLG_IN STATE_FLG_OUT SETS_CNT    I2CSN PIC_CODE_VER PIC_PARAM_VER PRETEST_ACTS    TLA_NUM  TAB   DISC_PART_NUM    DISC_SERIAL_NUM DISC_CNT MD_TEST_CNT PA_CH_USED RTSEC   HOST_ID CELL_NUM SSORT       ERR_CODES_S8       ERR_CODES_S7       ERR_CODES_S6 GRADE CONSEC_FAIL_CNTS CONT_FAIL_CNT LUL_FAIL_CNT         ALL_FAIL_DETAILS     APA_SN   LULFC   XTRKB   YBIAS   RELIX   OSETZ   CSETZ   OSETG   CSPSA   CSRSA   CSETG   THETA   UPTRK   XTRKD   POSTY   OSPSA   OSRSA   SSPSA   SSRSA   SLPSA   SLRSA   SETG1   SETG2   SETG3   SETG4   SLDR0   RSASP   TEMPI   TRSEC   SUMEC   WPSEC   1ZONE   1ZPSN
+     O5RHRX0JI2   NONE                 NONE       MBP_230901_BV_X0      03-25-2024            PROD            0             0        2 B04D062F       5.1.18    5.1.18_1.2            0  760675152 DOWN       205839917 EP04D000011WY3C2807       21         235          8    10  POPRIG01  2003100     8               NONE               NONE               NONE     8      0--0--0--20             0            0                     NONE  135065XL2       0    15.0   16.76       0 -7.2113 -7.2284  1.3318 -0.6838 -0.3119  1.1627  0.1118   -1.85    0.94   -0.28 -1.0102 -0.1575   0.592 -0.8975    -0.0 -0.1358   -0.53    5.93   15.24    8.78   368.0       0    49.8       0       0     0.0      59     116
+:::
+P_ERROR_SX:
+   ERROR_CODE_SX   DETAILS
+   allFailDetail      NONE
+   missingParams          
+    err_codes_s2      NONE
+    err_codes_s3      NONE
+    err_codes_s4      NONE
+    err_codes_s5      NONE
+    err_codes_s6      NONE
+    err_codes_s7      NONE
+    err_codes_s8      NONE
+             END       END
+:::
+P_TH_DATA:
+         HD_NUM STATE_FLG_IN STATE_FLG_OUT SCRIPT_REV_DATE SCRIPT_CTRL_STR   TLA_NUM PA_CH_USED CELL_NUM SSORT ALL_FAIL_DETAILS CMS_CONFIGURATION_USED ERR_CODES_S2 CONSEC_FAIL_CNTS CONT_FAIL_CNT LUL_FAIL_CNT  TAB     DISC_SERIAL_NUM PIC_CODE_VER DISC_PART_NUM    I2CSN    APA_SN    SETS_CNT   DISC_CNT   MD_TEST_CNT   RTSEC    HOST_ID   ERR_CODES_S3   ERR_CODES_S4   ERR_CODES_S5   ERR_CODES_S6   ERR_CODES_S7   ERR_CODES_S8   RESR0   RESWH   RESRH   DETCR   RESWC   SPNUP   RESTA   ECCEN   SPIN2   ONRRO   ODRRO   NOTMD   N_SUS   NBADS   TEMPC   PCTR0   SUMEC   1ZONE   1ZPSN   1RADI   1SKEW   1WPMW   1WHMW   1RHMW   1CWPH   1CLWH   1CLRH   1UJOF   1KBPI   1ZBBR   1ZBBS   1BBER   1M10B   1BSTD   1STDI   1SIGL   1THMS   1ABER   1BJMP   1PSTE   1PTRK   1BPIF   LVOLT   1WPA0   1TA40   1AFIT   1MT10   1EIOP   1EWPL   1BPI4   1WW2A   1WBBL   1WW2T   1ADC7   1WPHQ   1IOP0   1IOP1   1IOP2   1IOP3   1AT1P   1WPE   1FLR   1BPI6   1WPAV   1BFIT   1WPAF   1WLMW   1TFIT   1LOP4   1RHAF   1GLOS   1RCLR   1WCLR   RLCNT   1WW4T     SSRSA   WPSEC   1BLIP   1PK2T   SSPSA   1OVWR   1TPI1   SLDR0   1WRAT   SETG1   SETG2   SETG3   SETG4   1RHA0   1FFDB   1BPI5   1PK2A   1BPI7   1BPI1   1BPI3   1BPI2   1TPI5   1WPMP   1TPI7   1TPI6   1TPI4   1TPI3   1MT50   1PW50   1ADC2   1ADC3   1ADC6   1ADC4   1ADC5   1WHAF   1WPLQ     OSETZ   RHPCT   1AT2P   TRSEC   1AT2N    OSETG   1ASYM     OSPSA     OSRSA   1ERAW   RESGD   RESGB   ATMOS     SLRSA   1WHQ   RESGR   1LOP6   1RSNR   1RHQ   RESLD   1LOPK   SLPSA   1LOP7   1LOP5   LTHMA   1LOP3   1LOP2   1LOP1   1BOP3   XTRKD   XTRKB   1WHA0   1IFDB   1WSBL   1AT1N   POLAR   1RHMP   1NSA0   ZMALV   1AFLG   1MBLP   1BOPT   1PASY   1LFPP   1LASY   1BOPF   1MRAF   1ASYF   1BOJF   HWPE   1WCAP   1UJOA   1WRCY   1BRNG   1BHOP   1HCYC   1BHOS   1SBRX   1TBRG   1WPMZ   1WPMH   1WPMS   1NLVD   SIOMA   BSBER   1DASY   1HMSB   1HSEQ   1FBSX   1SCTR   1EMBX   DISI0     CSPSA     CSRSA   1LOPP   1BPIP   1TPIP   1ADCP   1BSLO   1TSLO   1WPLF   1WHLF   1RHLF   1BOPP   1KTPI   1ADCF   1CLWC   1WCMW   1WCME   1RH1X   1WC1X   1RH2X   1WC2X   1RH3X   1WC3X   1WCA0   1WCAF   1WCAV   1WCMP   1WCQ   1WCLQ   1WCLF   1MXTA   1TAFL    THETA   UPTRK   YBIAS   1ADCR   1BPIR   1LOPR   1TPIR   1DBRX   1LFGC   1UJNM   SKEWA   ACIDA   UACTG   1IOPB   1IEFF   1DPWR   1BEFF   1TEFF   1AEFF   1NRRO   1VSUS   1HWPE   POSTY   1SBR2   1NS10   1AFLT   1AFL2   1P50A   1NRNM   1P50E   1WH2F   1RHQZ   1BHS2   1RHNZ   1P50Z   1NROP   1WCCZ   1RTGT   1WTG2   1RHMZ   1PWT2   1WC2F   1SCT2   1DBR2   1BRG2   1PWTG   1AFDP   1WCQZ   1HSQ2   1NS50   1RTG2   1TBR2   1TCT2   1WCNZ   1HOP2   1AFDA   1RHCZ   1RH2F   1EDGE   1WTGT   1FBS2   1WCMZ   1OVW1   1WC1F   1SKIP   1WTUS   1XTEC   1TEAT   1XTE2   1TEA2   1MXPP   DRH31   DRH32   DWC31   DWC32   DWCRH   1OPWT   1OPW2   1SBTG   1PKPK   1CORG   1CT2D   1CTHD   1NRRA   1RRO   1LPPD   1MXPA   1CVTM   1CVTS   SIG05   NOISE05   WSNR05   SIG15   NOISE15   WSNR15   PLOPK   9WPE0   PAGR0   TEAA1   1LTEC   ATEC1   TEAA2   1LTE2   ATEC2   BR200   BR150   BRADP   BR202   BR152   BRAD2   1TSWW   1LUMP   1BPIE   1TPIE   1ADCE   1EWP0   5BPIE   5TPIE   5ADCE   9BPIE   9TPIE   9ADCE   5BFIT   5TFIT   5AFIT   5BPIR   5TPIR   5ADCR   5BEFF   5TEFF   5AEFF   5LOPK   5LOPR   5IEFF   9BFIT   9TFIT   9AFIT   9BPIR   9TPIR   9ADCR   9BEFF   9TEFF   9AEFF   9LOPK   9LOPR   9IEFF   1DFRT   1MODE   1BCOV   1MXSO   1MNSO   1AVSO   1SDSO   1LOPZ   1BERZ   1BERI   1NCCW   1WPEN   1WPEP   1DTTG   1MXCG   1SSNR   1TSNR   1MODD   1EP50   1C312   1C313   1C323   1SPSX   1RPSX   1HPSX   1LPSX   1PPSX   1MPSX   1SPS2   1RPS2   1HPS2   1LPS2   1PPS2   1MPS2   1RHX   RLT47   LEWP0   LEWPL   LEIOP   PWCRS   RMASK   RDET6   RHHIRP   MHOP1   MHOP2   T_CLR   T_MTA   T_TRS   T_SLN   T_VBA   T_LPV   T_ATI   T_BIE   PV_REJECT_REASON   MD_REJECT_REASON   MD_RUN_MODE   PRV_RECIPE     RECIPE   RESWC_2   RESWH_2   RESRH_2   DETCR_2   RESLD_2   DETCR_V   NOTMD_2   N_SUS_2   NBADS_2   1MXPP_2   1MXCG_2   1NS10_2   1NS50_2   1PW50_0   1ASYM_0   1PPOL_0   1MRAF_2   STD_DCV   RNG_DCV   MAX_DCV   FST_VAR   LOC_VAR   RNG_VAR   ONRRO_2   ODRRO_2   NOTMD_3   N_SUS_3   NBADS_3   1MXPP_3   1MXCG_3   1NS10_3   1NS50_3   BIE_1ST   BER_1ST   BIE_LST   BER_LST   BIE_TRK   BER_TRK   1MODE_2   1SIGL_2   1GLOS_2   1BCOV_2   1NCCW_2   1SPNM   RSHUN   RSERI   IDARK   IDEAL   VIPER_R2   VIPER_E2   VIPER_R2E   VIPER_Z0   RESGD_2   RESGB_2   RESGR_2   BOLOF   WCAR   WCLAR   WHAR   RHAR   1DCLR   SLDRBIN   MEDIA_COMP   1SLCK   ASPL   PSPL   ASWH   PSWH   ASWC   PSWC   ASRH   PSRH   1DLTH   1DL31   RLVD   RLVD1   WPMSL   WPMOF   EPSPL   EASPL   EPSWH   EASWH   EPSWC   EASWC   EPSRH   EASRH   1NONL   SLCKPP   SLCKMR   SLCKRP   SLCKMA
+     O5RHRX0JI2            0             0      03-25-2024            PROD 760675152          8  2003100     8             NONE       MBP_230901_BV_X0         NONE      0--0--0--20             0            0 DOWN EP04D000011WY3C2807       5.1.18     205839917 B04D062F 135065XL2           2         21           235      10   POPRIG01           NONE           NONE           NONE           NONE           NONE           NONE    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888       0      59     116    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -888   -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -0.8975     0.0    -888    -888   0.592    -888    -888   368.0    -888   -0.53    5.93   15.24    8.78    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -7.2113    -888    -888       0    -888   1.3318    -888   -1.0102   -0.1575    -888    -888    -888    -888   -0.1358   -888    -888    -888    -888   -888    -888    -888    -0.0    -888    -888    -888    -888    -888    -888    -888    0.94    15.0    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -0.6838   -0.3119    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -888    -888    -888    -888    -888   0.1118   -1.85   16.76    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -0.28    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -888    -888    -888    -888    -888    -888      -888     -888    -888      -888     -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888   -888    -888    -888    -888    -888    -888    -888    -888     -888    -888    -888      -1      -1      -1      -1      -1      -1      -1      -1             FA_DBG               PASS          EVAL     ACC_PASS   ACC_PASS      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888      -888    -888    -888    -888    -888    -888       -888       -888        -888       -888      -888      -888      -888    -888   -888    -888   -888   -888    -888         B       ENABLE    -888   -888   -888   -888   -888   -888   -888   -888   -888    -888    -888   -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888    -888     -888     -888     -888     -888
+:::
+   Drive Attribute value match with current value  
+   Creating and Writing  B04D062F_1723019225.TDF  GenericResultsFile to SFTP server
+---
+   set_stopWatch -- T_TDF  --set--
+---
+--- Send TDF to sftp://ttcomet-sftp1.tep.thai.seagate.com/sftp_data/sftp/Comet/COMET ---
+---
+   set_stopWatch -- T_TDF  --end--
+---
+---
+DEBUG: TDF file
+"HD_NUM","TST_DATE","ASSY_DATE","HOST_ID","SLOT_ID","MD_SERIAL_NUM","TAB","WORK_ORDER","WORK_ORDER_VER","TMWI","HGA_PART_NUM","PARM_ID","SCRIPT_DATE","SCRIPT_COMMENTS","SETS_ID","APA_SN","RPM","READER_INDEX","DISC_PART_NUM","DISC_SERIAL_NUM","DISC_PTE_ID","RD_IBS_PATTERN","WR_IBS_PATTERN","TST_STATUS","PART_DISPOSITION_CODE","TEST_TYPE","TEST_FLAGS_IN","TEST_FLAGS","MD_TEST_CNT","DISC_CNT","SETS_CNT","RETEST_REASON","TIME","RADIUS","SKEW_ANGLE","CTQ_RD_RES","ISI_RES_AT_ET","ISI_AMP_AT_ET","ISI_ASYM_AT_ET","CTQ_WRT_RES","CTQ_TA_RES","CTQ_HTR_RES","CTQ_HTR_2_RES","CTQ_WRT_WDTH","CTQ_HMS_CAP","DELTA_MR_RES","SPEC_NO","SPEC_VER","SPEC_DAT","SUB_BUILD_GROUP","LUL_VERSION","MD_RECIPE","MD_REJECT_REASON","PRV_RECIPE","PRV_REJECT_REASON","MD_STATUS","MD_RUN_MODE","MD_BUYOFF_CNT","MD_RELEASE_CNT","PCBA_SERIAL_NUM","ROSA_SERIAL_NUM","WAF_WTR_RES","WAF_WTR_HTR_RES","WAF_RDR_HTR_RES","WAF_TAD_RES","LAS_IV_RES_OHM","LAS_TON_V","LAS_ACITHD_MAG","LDI_TAA_MA","FFW_PUT_FLAG","ROSA_CNT","SLIDER_LOT_ID","CHUNK_ID","NAME1","NAME2","NAME4","NAME5","NAME6","VALUE6","NAME7","VALUE7","NAME8","VALUE8","NAME9","VALUE9","NAME10","VALUE10","NAME11","VALUE11","NAME12","VALUE12","NAME13","VALUE13","NAME14","VALUE14","NAME15","VALUE15","NAME16","VALUE16","NAME17","VALUE17","NAME18","VALUE18","NAME19","VALUE19","NAME20","VALUE20","NAME21","VALUE21","NAME22","VALUE22","NAME23","VALUE23","NAME24","VALUE24","NAME25","VALUE25","NAME26","VALUE26","NAME27","VALUE27","NAME28","VALUE28","NAME29","VALUE29","NAME30","VALUE30","NAME35","VALUE35","NAME43","VALUE43","NAME45","VALUE45","NAME51","VALUE51","NAME55","VALUE55","NAME56","VALUE56","NAME57","VALUE57","NAME58","VALUE58","NAME59","VALUE59","NAME67","VALUE67","NAME68","VALUE68","NAME92","VALUE92","NAME93","VALUE93","NAME94","VALUE94","NAME99","VALUE99","NAME112","VALUE112","NAME113","VALUE113","NAME128","VALUE128","NAME129","VALUE129","NAME130","VALUE130","NAME131","VALUE131","NAME132","VALUE132","NAME156","VALUE156","NAME177","VALUE177","NAME178","VALUE178","NAME179","VALUE179","NAME180","VALUE180","NAME181","VALUE181","NAME182","VALUE182","NAME183","VALUE183","NAME187","VALUE187","NAME188","VALUE188","NAME189","VALUE189","NAME190","VALUE190","NAME191","VALUE191","NAME192","VALUE192","NAME195","VALUE195","NAME196","VALUE196","NAME197","VALUE197","NAME205","VALUE205","NAME226","VALUE226","NAME228","VALUE228","NAME234","VALUE234","NAME235","VALUE235","NAME250","VALUE250","NAME266","VALUE266","NAME271","VALUE271","NAME273","VALUE273","NAME275","VALUE275","NAME276","VALUE276","NAME277","VALUE277","NAME278","VALUE278","NAME282","VALUE282","NAME283","VALUE283","NAME284","VALUE284","NAME285","VALUE285","NAME286","VALUE286","NAME287","VALUE287","NAME295","VALUE295"
+
+"O5RHRX0JI2","07-AUG-24:15:27:05","10-JUN-2024:11:29","POPRIG01","2003100","B04D062F","DN","CMTMB99D","9","TESMB01","100851649","MBP_230901_BV_X0","25-MAR-24:00:00:00","MARLINBPLOS_BASE","2449030719598326759880000DN","135065XL2",7201,1,"205839917","EP04D000011WY3C2807","EP04D","A","A","8","HOLD","PROD","0","0",235,21,2,"EVAL",10,1.159,16.52,0,368.0,14300.71,5.25,0,0,0,0,0,0,99,"0","1","12-MAR-2024","MBP_SLICK_ITC","24.05.27.00E","ACC_PASS","PASS","ACC_PASS","FA_DBG","PRODUCTION","EVAL",1,6,"3972854J","3HP2261R",1.33,29.6,46.75,60.02,0,0,0,0,"Y",274,"NL2NAORN7","NL2NAO8","Start_Initialize","0--0--0--20","0-0-0","PASS","GRADE",8,"TLA_NUM",760675152,"PRETEST_ACTS",0,"PA_CH_USED",8,"CONT_FAIL_CNT",0,"LULFC",0,"XTRKB",15.0,"RELIX",0,"OSETZ",-7.2113,"OSETG",1.3318,"CSPSA",-0.6838,"CSRSA",-0.3119,"THETA",0.1118,"UPTRK",-1.85,"XTRKD",0.94,"OSPSA",-1.0102,"OSRSA",-0.1575,"SSPSA",0.592,"SSRSA",-0.8975,"SLPSA",-0.0,"SLRSA",-0.1358,"SETG1",-0.53,"SETG2",5.93,"SETG3",15.24,"SETG4",8.78,"LVOLT",0,"RESTA",999,"RSASP",0,"T56ON",0,"RLCNT",0,"SUMEC",0,"WPSEC",0.0,"1ZONE",59,"1ZPSN",116,"RTPAD_STATUS",1,"RTPAD_TOTCNT",108,"1IOP0",0,"1PK2T",0,"1WW2T",0,"1AFDA",0,"1DLTH",0,"1DL31",0,"ASYM_ATTEMPT",0,"ASYM_SUCCESS",0,"TEMPI",49.8,"SLDR_BIN",2,"SLDR_BIN_CODE",2,"1KBPI",0,"1SOVA",-1,"1BSTD",1,"1STDI",1,"1UNCV",99,"1QBIE",999,"1MODE",1,"1SIGL",1,"1BJMP",1,"1AT1N",9,"1AT1P",9,"1AT2N",9,"1AT2P",9,"1PSTE",9,"1WPEN",0,"1WPEP",0,"1WPE",0,"1HWPE",0,"TRSEC",0,"1IOP3",0,"YBIAS",16.76,"POSTY",-0.28,"FAILURE_FLAG",0,"T56EC",0,"MPFT_FLG",0,"UACTG",0,"MD_FAIL_CNT",10001,"CSETZ",-7.2284,"CSETG",1.1627,"1RHX",0,"RERDR",0,"REWRR",0,"REWHR",0,"RERHR",0,"REDTR",0,"RELDR",0,"SM_SIGN",0
+
+eval_short_note = MARLINBPOWL_ITCHMS
+---
+---
+   set_stopWatch -- T_FFW  --set--
+---
+FFW_PutResultsToSeatrack: init 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_TST_STATUS), attrValue(8)
+ELTAttribute Updated() Name(ET_TST_STATUS):Value(8)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_DISPOSITION), attrValue(HOLD)
+ELTAttribute Updated() Name(ET_DISPOSITION):Value(HOLD)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_WORK_ORDER), attrValue(CMTMB99D)
+ELTAttribute Updated() Name(ET_WORK_ORDER):Value(CMTMB99D)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_TST_DATE), attrValue(07-AUG-24:15:27:05)
+ELTAttribute Updated() Name(ET_TST_DATE):Value(07-AUG-24:15:27:05)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_RD1_RES), attrValue(0)
+ELTAttribute Updated() Name(ET_RD1_RES):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_WRT1_RES), attrValue(0)
+ELTAttribute Updated() Name(ET_WRT1_RES):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_WRT1_HTR_RES), attrValue(0)
+ELTAttribute Updated() Name(ET_WRT1_HTR_RES):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_RD_HTR_RES), attrValue(0)
+ELTAttribute Updated() Name(ET_RD_HTR_RES):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_TA_RES), attrValue(0)
+ELTAttribute Updated() Name(ET_TA_RES):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_LAS_IV), attrValue(0)
+ELTAttribute Updated() Name(ET_LAS_IV):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_LAS_TON), attrValue(0)
+ELTAttribute Updated() Name(ET_LAS_TON):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_LAS_THRESHOLD), attrValue()
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_LAS_BIAS), attrValue()
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_LC_TAA), attrValue(0)
+ELTAttribute Updated() Name(ET_LC_TAA):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_LAS_ACITHD), attrValue(0)
+ELTAttribute Updated() Name(ET_LAS_ACITHD):Value(0)
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_WCAP_PCT), attrValue()
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_ITC_MA), attrValue()
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_ITW_MA), attrValue()
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(ET_POL), attrValue()
+SetELTAttribute: END 
+SetELTAttribute: START 
+SetELTAttribute() attrName(PART_NUM), attrValue(100851649)
+ELTAttribute Updated() Name(PART_NUM):Value(100851649)
+SetELTAttribute: END 
+SendResultsToSeatrack: START 
+RequestService(): hd num(O5RHRX0JI2), name(SetELTAttribute), sdata((0, 'Pass')) 
+SendResultsToSeatrack: END 
+---
+   set_stopWatch -- T_FFW  --end--
+---
+P_TDF_TIME_INFO:
+           HD_NUM           TST_DATE MD_SERIAL_NUM  HOST_ID SLOT_ID                TDF_NAME
+       O5RHRX0JI2 07-AUG-24:15:27:05      B04D062F POPRIG01 2003100 B04D062F_1723019225.TDF
+:::
+P000_ZONE_POSITION_LOG:
+  ZONE  ZONE_POS         COMMENT            REASON
+    59       108   DEFAULT_ZNPSN    ZNPSN_ROTATION
+    59       116  ZNPSN_ROTATION               END
+:::
+  SORT_LEVEL attribute values = 3,1,6,7 or 8
+  plus a SORT_LEVEL = 5 OVER-RIDE to collect sliders with SLRSA < -0.5 or > 0.5
+                                        BACKUP_2_SORT    BACKUP_1_SORT   PRIME_SORT
+P993_SLIDER_SORT_LEVEL_SPECS:
+  PARM_CODE  S3(RETEST)  S1(FAIL_HEAD)  S6_MIN  S6_MAX  S7_MIN  S7_MAX  S8_MIN  S8_MAX
+      1AEFF          X       <900          900       X     950       X     1000      X
+      POLAR          X       <0.1
+      1THMS          X       <7.0
+      1BSTD          X   <=0_OR_>0.08   AND_COMBO_3
+      1BCOV          X        <20       AND_COMBO_3
+      DISI0          X   <-10_OR_>10
+      PCTR0          X   <-6.0_OR_>6.0
+      1RHMP          X   <0_OR_>10
+      1IEFF          X   <0.1_OR_>27
+      RESR0  <194_OR_>1244
+      RESWH  <30_OR_>150
+      RESRH  <30_OR_>150
+      DETCR  <30_OR_>200
+      RESTA  <50_OR_>200
+      RESWC  <3_OR_>13
+      LVOLT  <1.75_OR_>2.7
+      RESLD  <10_OR_>70
+      SPNUP  <0_OR_>1
+      PAGR0  <0_OR_>15
+      ONRRO  <1_OR_>7.0
+      ODRRO  <1_OR_>12
+      NOTMD  <0_OR_>50
+      N_SUS  <0_OR_>70
+      NBADS  <0_OR_>70
+      ECCEN  <0_OR_>1.2
+      SUMEC  <0_OR_>22
+      1CLRH  <15_OR_>300
+      1CLWC  <15_OR_>300
+      1ZBBR  <0_OR_>0.98 (AND_head_has_failed_a_S1_spec)
+      1BJMP      >0.24 (AND_mati_failure_OR_ste_failure)
+      1ABER      >-2.3
+      1SOVA      >-1.2 (AND_stability_failure)
+:::
+P901_COMET_CNTRL_ATTRIBUTE_SUMMARY:
+  IN_OUT        HD_NUM   TAB  STATE_FLG  ACTION_TAKEN_STRING  SORT_LEVEL  TEST_RUN_GRADE  SETS_CNT  SETS_CNT_LIMIT  CONSEC_FAIL_CNTS  CONT_FAIL_CNT  LUL_FAIL_CNT  DISC_CNT_UP  DISC_CNT_DOWN  DISC_CNT_LIMIT  DISC_SIDE_GOOD
+      IN    O5RHRX0JI2  DOWN          0              HD_TEST         XXX             XXX         2            5000       0--0--0--20              0             0            0             21             400            BOTH
+     OUT           XXX   XXX          0       MANUAL_SORT_S8           8               8       XXX            5000       0--0--0--20              0             0            0             21             400            BOTH
+:::
+   STATE_FLG bit mapping                                  PARK CRASHED
+     15   14    13    12     11   10    9    8              7     6     5     4       3     2     1     0
+      X    X   I2CSN   X      X  FAKE   0    0  normal LUL           SCRIPT  LUL     Age   Age  repeat  NOT
+              Mis-Match          TEST   0    1  reload same slider     FAIL  FAIL   SETS  DISC   test   CALIBRATED
+                           (temp_hold)  1    0  unload only                                     in slot
+                       (like HD_NUM=0)  1    1  No LUL (preserve this state if set externally)
+   32768 16384 8192 4096   2048 1024  512  256            128    64    32    16       8     4     2     1
+---
+Finish electrical test, B04D062F
+Aug 07 2024-15:27:08  -------------------- - - - - PRODUCTION : COMPLETE - - - - ---------------------
+ 
+Aug 07 2024-15:27:08  MPPLR = None
+Aug 07 2024-15:27:08  **TestCompleted=172,0.04
+Aug 07 2024-15:27:08  **SPC_ID32=200
+ 
+---
+   set_stopWatch -- PROD_TIME  --end--
+---
+---
+   set_stopWatch -- TOTAL_TIME  --end--
+---
+P_STOPWATCH_TABLE:
+     TOTAL_TIME  T_TEMPHOLD  INIT_TIME  T_FFW  T_TDF  PROD_TIME
+          12.28        2.46       6.75   1.76   0.75       5.53
+:::
+P_STOPWATCH_TABLE_2:
+     TOTAL_TIME  INIT_TIME  PROD_TIME  T_TEMPHOLD  T_PRESPNUP  T_SPINDUP  T_CALTEST  T_RXTEST  T_RERES  T_RESWC  T_RESWHRH  T_RESR0  T_DETCR  T_RESBOLO  T_RESLD  T_PAGR0  T_RESTA  T_ECCEN  T_ROTAT  T_T150SVLN  T_T282_VCM_BODE  T_T282_UACT_BODE  T_T033NRRO  T_T163NBADS  T_T228ACID  T_T135CLR  T_MXTA  T_NSA0  T_IOP2T  T_POLAR  T_HIRP  T_T163ERASE  T_NS50  T_AFDA  T_EWP0  T_EWP0_JAZZ  T_OVWR  T_T451OPTI  T_UJNM  T_VBAR_EIOP  T_VBAR_SQZ1  T_VBAR_SQZ6  T_READER_1  T_WEAKWR_1  T_SBTG  T_SCRIPBPIC  T_BESTSQZBER  T_T482LV  T_THMS  T_LPPD  T_T461SECBER  T_BIEVSRDOFS  T_T229BIE  T_T297BIE  T_T297BIE_RE  T_SQZBPIC  T_ATISTE  T_WPE  T_P50A  T_MT10  T_READER_2  T_PW50  T_WCAP  T_WCAP_JAZZ  T_FFDB  T_READER_3  T_RSNR  T_T297BIE_TTR  T_T349LPV  T_VIPER  T_SET_COEF  T_HWPE  T_DLTH  T_SLICK  T_TDF  T_FFW
+          12.28       6.75       5.53        2.46         XXX        XXX        XXX       XXX      XXX      XXX        XXX      XXX      XXX        XXX      XXX      XXX      XXX      XXX      XXX         XXX              XXX               XXX         XXX          XXX         XXX        XXX     XXX     XXX      XXX      XXX     XXX          XXX     XXX     XXX     XXX          XXX     XXX         XXX     XXX          XXX          XXX          XXX         XXX         XXX     XXX          XXX           XXX       XXX     XXX     XXX           XXX           XXX        XXX        XXX           XXX        XXX       XXX    XXX     XXX     XXX         XXX     XXX     XXX          XXX     XXX         XXX     XXX            XXX        XXX      XXX         XXX     XXX     XXX      XXX   0.75   1.76
+:::
+Finished electrical test, B04D062F
+ 
+Aug 07 2024-15:27:08  **SPC_ID32=1
+ 
+Aug 07 2024-15:27:08  **SPC_ID32=1
+ 
+TESTER_TIMESTAMP:
+OP_NAME  EQUIP_ID  EQUIP_TYPE  TEST_TYPE  AUTOMATION_TIME                  SCAN_TIME                INSERT_TIME       OPERATION_START_TIME  FIRST_TEST_TIME  LAST_TEST_TIME          OPERATION_PF_TIME 
+  COMET  POPRIG01                                                                                                    "08/07/2024 15:26:54"                                       "08/07/2024 15:27:08" 
+ 
+TEST_TIME_BY_STATE:
+  OPER       STATE_NAME  SEQ                 START_TIME                   END_TIME  ELAPSED_TIME  CPU_ELAPSED_TIME  SZ_START  RSS_START  SZ_END  RSS_END  DRIVE_TEMP 
+ COMET       PRODUCTION    1      "08/07/2024 15:27:02"      "08/07/2024 15:27:08"          5.49              0.04    415480      24188  415480    24188        49.6 
+ COMET              END    2      "08/07/2024 15:27:08"      "08/07/2024 15:27:08"          0.01              0.02    415480      24188  415480    24188        49.6 
+ 
+Aug 07 2024-15:27:08  =========  Write low priority pTables to XML File  =========
+Aug 07 2024-15:27:08                         SENT  NOT_SENT
+Aug 07 2024-15:27:08  Process tables:        2052
+Aug 07 2024-15:27:08  P1 table size:            0         0
+Aug 07 2024-15:27:08  P2 table size:            0         0
+Aug 07 2024-15:27:08  P3 table size:            0         0
+Aug 07 2024-15:27:08  TEST_TIME_BY_TEST:      788
+Aug 07 2024-15:27:08  XML ResultsFile        3485         0
+Aug 07 2024-15:27:08  ============================================================
+ 
+ 
+Aug 07 2024-15:27:08  The following tests were run: [0, 11, 166, 172]
+Aug 07 2024-15:27:08  TDCI_COMM_NUM:   0 
+Aug 07 2024-15:27:08  TDCI_COMM_LIFE:   0 
+Aug 07 2024-15:27:08  Save drive attributes, B04D062F
+Aug 07 2024-15:27:08  ***********************  Saving DriveAttributes to FIS  ************************
+Aug 07 2024-15:27:08  restartFlags: {'doRestart': 0, 'sendRun': 1, 'holdDrive': 0}
+Aug 07 2024-15:27:08  Current operation: COMET
+Aug 07 2024-15:27:08  Report Error code: 0
+Aug 07 2024-15:27:08  User Time: 0.2 - System Time: 0.05
+Aug 07 2024-15:27:08  Child User Time: 0.57 - Child System Time: 0.12 - CPU Time: 0.94
+Aug 07 2024-15:27:08  Memory Check USS: 38256
+Aug 07 2024-15:27:08  Finish memory check, B04D062F

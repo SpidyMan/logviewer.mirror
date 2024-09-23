@@ -4,8 +4,7 @@ import re
 
 class SearchDialog(wx.Dialog):
     def __init__(self, parent):
-        super().__init__(parent, title="Search Text", size=(500, 400))
-        
+        super().__init__(parent, title=f"Search Text in {parent.TabName}", size=(500, 400))
         # Layout setup
         panel = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
@@ -13,7 +12,7 @@ class SearchDialog(wx.Dialog):
         # Search field
         hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         lbl_search = wx.StaticText(panel, label="Search:")
-        self.txt_search = wx.TextCtrl(panel)
+        self.txt_search = wx.TextCtrl(panel, style=wx.TE_PROCESS_ENTER)  # Add TE_PROCESS_ENTER here
         hbox1.Add(lbl_search, flag=wx.RIGHT, border=8)
         hbox1.Add(self.txt_search, proportion=1)
         vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
@@ -29,14 +28,6 @@ class SearchDialog(wx.Dialog):
         vbox.Add(self.chk_whole, flag=wx.LEFT, border=10)
         vbox.Add(self.chk_regex, flag=wx.LEFT, border=10,)
         
-        # # Direction radio buttons
-        # hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        # self.rb_forward = wx.RadioButton(panel, label="Forward", style=wx.RB_GROUP)
-        # self.rb_backward = wx.RadioButton(panel, label="Backward")
-        # hbox2.Add(self.rb_forward, flag=wx.RIGHT, border=8)
-        # hbox2.Add(self.rb_backward, flag=wx.RIGHT, border=8)
-        # vbox.Add(hbox2, flag=wx.LEFT|wx.TOP, border=10)
-
         # Buttons: Show Next, Count, Close
         hbox3 = wx.BoxSizer(wx.HORIZONTAL)
         btn_next = wx.Button(panel, label="Show Next")
@@ -61,45 +52,37 @@ class SearchDialog(wx.Dialog):
         # Bind listbox click event
         self.lst_results.Bind(wx.EVT_LISTBOX, self.OnResultSelected)
 
+        # Bind Enter key on the search textbox to OnShowNext
+        self.txt_search.Bind(wx.EVT_TEXT_ENTER, self.OnShowNext)
         self.parent = parent
         self.search_results = []
-        self.current_index = 0
-
+        
     def OnShowNext(self, event):
         search_text = self.txt_search.GetValue()
         
         if not search_text:
             return
-        #if not isinstance(search_text,bytes): search_text = bytes(search_text,'utf-8')
-        
-        # Define flags for regex searches
         flags = 0
-        if not self.chk_case.GetValue():  # Case-insensitive regex
+        if not self.chk_case.GetValue():  
             flags |= re.IGNORECASE
         
-        # Adjust the search text if 'Match whole word' is selected
         if self.chk_whole.GetValue():
             search_text = rf"\b{search_text}\b"
 
         self.search_results = []
         # Iterate over lines in the editor
-        real_pos = 0  # Start tracking the overall position
-
-        #for line_no, line in enumerate(self.parent.raw_log.splitlines()):
+        real_pos = 0  #
         for line_no, line in enumerate(self.parent.editor.GetValue().splitlines()):
             if self.chk_regex.GetValue():
-                # Regex search when the checkbox is checked
-                match = re.search(search_text, line, flags)  # Make sure you define the correct regex flags
+                match = re.search(search_text, line, flags) 
                 if match:
-                    start_pos, end_pos = match.span()  # Get start and end positions in the line
-                    start_pos += real_pos  # Adjust with real_pos to account for full log
-                    end_pos += real_pos    # Same adjustment for end_pos
+                    start_pos, end_pos = match.span() 
+                    start_pos += real_pos  
+                    end_pos += real_pos    # Sa
                     foundState = self.parent.log_data.GetStateByPos(start_pos)[0].StateName
                     self.search_results.append((foundState, line_no, line, start_pos, end_pos))
             else:
-                # Non-regex search: case-insensitive or case-sensitive
                 if not self.chk_case.GetValue():
-                    # Case-insensitive search
                     lower_line = line.lower()
                     lower_search_text = search_text.lower()
                     pos = lower_line.find(lower_search_text)
@@ -142,66 +125,8 @@ class SearchDialog(wx.Dialog):
 
         if select_index != wx.NOT_FOUND:
             select_item = self.search_results[select_index]
-            #(foundState, line_no, line, pos, end_pos)
             result_text = select_item[2]
             line_number = select_item[1]
-            #line_number = int(result_text.split(":")[0].split()[1]) - 1
+            self.parent.Activate_Tab()
             self.parent.editor.SetSelection(select_item[3], select_item[4])  # Highlight from start to end
             self.parent.editor.ScrollToLine(line_number)
-
-
-class MainFrame(wx.Frame):
-    def __init__(self):
-        super().__init__(None, title="Text Editor with Search", size=(800, 600))
-        panel = wx.Panel(self)
-
-        # Text Editor (Read-only)
-        self.editor = stc.StyledTextCtrl(panel, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        
-        # Open File Button
-        open_file_btn = wx.Button(panel, label="Open File")
-        search_btn = wx.Button(panel, label="Search")
-
-        # Layout
-        vbox = wx.BoxSizer(wx.VERTICAL)
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
-
-        hbox.Add(open_file_btn)
-        hbox.Add(search_btn, flag=wx.LEFT, border=5)
-
-        vbox.Add(self.editor, proportion=1, flag=wx.EXPAND | wx.ALL, border=10)
-        vbox.Add(hbox, flag=wx.ALIGN_CENTER | wx.BOTTOM, border=10)
-
-        panel.SetSizer(vbox)
-
-        # Event Bindings
-        open_file_btn.Bind(wx.EVT_BUTTON, self.OnOpenFile)
-        search_btn.Bind(wx.EVT_BUTTON, self.OnSearch)
-
-    def OnOpenFile(self, event):
-        with wx.FileDialog(self, "Open Text File", wildcard="Text files (*.txt)|*.txt",
-                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
-
-            if fileDialog.ShowModal() == wx.ID_CANCEL:
-                return
-
-            # Load the content of the file into the text editor
-            pathname = fileDialog.GetPath()
-            with open(pathname, 'r') as file:
-                self.editor.SetText(file.read())
-
-    def OnSearch(self, event):
-        search_dialog = SearchDialog(self)
-        search_dialog.ShowModal()
-
-
-class MyApp(wx.App):
-    def OnInit(self):
-        frame = MainFrame()
-        frame.Show()
-        return True
-
-
-if __name__ == "__main__":
-    app = MyApp(False)
-    app.MainLoop()

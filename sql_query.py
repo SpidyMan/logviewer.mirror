@@ -4,15 +4,22 @@
 # ( to use in real production reminded to change to do params blinding.)!!!!!!
 
 import pandas as pd
-#import oracledb
+import oracledb
 from datetime import datetime
-import time
-sql_user="comet_user"
-sql_password="usercomet"
-sql_host="TTCETODS.TEP.THAI.SEAGATE.COM"
-sql_port=1521
-sql_sid="ods"
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
 
+sql_user=config['SQL'].get('sql_user')
+sql_password=config['SQL'].get('sql_password')
+sql_host=config['SQL'].get('sql_host')
+sql_port=config['SQL'].getint('sql_port')
+sql_sid=config['SQL'].get('sql_sid')
+print(sql_user)
+print(sql_password)
+print(sql_host)
+print(sql_port)
+print(sql_sid)
 def sql_param_spliter(param): 
     ## this function will convert multiple params like abc,def or abc_def to 'abc','def'
     param = param.replace('_',',')
