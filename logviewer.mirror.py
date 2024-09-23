@@ -148,7 +148,7 @@ class MainFrame(wx.Frame):
         self.toolbar.AddControl(wx.StaticText(self.toolbar, -1, " DriveSN: "))
         self.toolbar.AddSeparator()
         #self.snlist = utils.getSetting("DriveSN_history", [])
-        self.snlist = ['B04D062F']
+        self.snlist = ['']
         self.comboBoxSN = wx.ComboBox(parent=self.toolbar, id=-1, value="", size=wx.Size(90, 20), choices=self.snlist)
         self.comboBoxSN.Select(0)
         self.toolbar.AddControl(self.comboBoxSN)
