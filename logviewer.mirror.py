@@ -2,8 +2,8 @@ import wx
 import sealogfile as sealog
 import wx.lib.buttons as buttons
 from wx.py.editor import EditWindow
-import pandas as pd
-import re, os, math
+# import pandas as pd
+import re, os, sys
 from history_frame import history_frame   #from history_frame import history_frame,log_obj_creater
 from log_server_process import log_obj_creater
 from sealogfile.utils import str_it
@@ -215,17 +215,16 @@ class MainFrame(wx.Frame):
         log_viewer.TabName = log_filename
 # Main application
 if __name__ == "__main__":
-    app = wx.App(False)
-    frame = MainFrame(None, "LogViewer ก๊อบเกรด B ( Speed9 Logviewer)")
-    frame.Show(True)
+    if sys.version_info[0] == 3:
+        print('This is Python3 .. Lets Rock n Roll!!!')
+        app = wx.App(False)
+        frame = MainFrame(None, "LogViewer ก๊อบเกรด B ( Speed9 Logviewer)")
+        frame.Show(True)
+        # #ftp_zip_path = "teppinasv001.seagate.com/prod/none/merlin/history/COMET/20/B04D062F.4905113404.r.zip"
+        # local_file="B04D062F_COMET_135_PASS.txt"
+        # log_process = log_obj_creater('ABCDE','TEST',99,'PASS',ftp_zip_path,local_file)
+        # frame.add_log_tab(log_process.logobj)
+        app.MainLoop()
+    else:
+        print('Python2')
 
-    # serial = "ABCDE"
-    # oper = 'TEST'
-    # ts = 99
-    # code= 'PASS'
-    # #ftp_zip_path = "teppinasv001.seagate.com/prod/none/merlin/history/COMET/20/B04D062F.4905113404.r.zip"
-    # ftp_zip_path = "teppinasv001.seagate.com/prod/none/merlin/history/COMET/20/B04D062F.4905113404.r.zip"
-    # local_file="B04D062F_COMET_135_PASS.txt"
-    # log_process = log_obj_creater(serial,oper,ts,code,ftp_zip_path,local_file)
-    # frame.add_log_tab(log_process.logobj)
-    app.MainLoop()
