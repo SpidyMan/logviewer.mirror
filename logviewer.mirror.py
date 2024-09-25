@@ -2,11 +2,22 @@ import wx
 import sealogfile as sealog
 import wx.lib.buttons as buttons
 from wx.py.editor import EditWindow
+import wx.lib.agw.aui as aui
 # import pandas as pd
+from cryptography.hazmat.primitives.kdf import pbkdf2
+import encodings.idna
 import re, os, sys
 from history_frame import history_frame   #from history_frame import history_frame,log_obj_creater
-from log_server_process import log_obj_creater
 from sealogfile.utils import str_it
+import sealogfile.highlight as HL
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+try:
+    max_history_count = config['SETUP'].getint('MAX_HISTORY')
+except:
+    max_history_count = 100
+
 class LogViewer(wx.Panel):
     """LogViewer modified to be used inside a tab."""
     def __init__(self, parent, logobj:sealog.F3LogFile):
@@ -59,10 +70,8 @@ class LogViewer(wx.Panel):
         # Store parsed log data
         self.log_data = logobj
         self.build_tree()
-
-        # Bind events
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_selection)
-
+        HL.initStyles(self.editor)
     def build_tree(self):
         """Build tree based on the log data structure."""
         self.tree.DeleteAllItems()
@@ -73,8 +82,8 @@ class LogViewer(wx.Panel):
             state_item = self.tree.AppendItem(root, state.StateName)
             self.tree.SetItemData(state_item, state)
             self.tree.SetItemBold(state_item, True)
-            #HL.highlight(self.editor, HL.STYLE_STATE, state_item)
-            # Highlight(stc_editor, style, f3logobj, base_start=0):
+            HL.highlight(self.editor, HL.STYLE_STATE, state)
+
             for st in state.STList:
                 name = str_it(st.TestName)
                 param = str_it(st.ExecutionParameter)
@@ -82,15 +91,20 @@ class LogViewer(wx.Panel):
                     stitem = f"[{st.TestNum:03}] {name} ({param})"
                 except:
                     stitem = f"[{st.TestNum:03}] Unknown Test ({param})"
+                
                 st_item = self.tree.AppendItem(state_item, stitem)
                 self.tree.SetItemData(st_item, st)
-                #HL.highlight(self.editor, HL.STYLE_SELFTEST, st_item)
+
+                if st.TestNum > 0:
+                    HL.highlight(self.editor, HL.STYLE_SELFTEST, st)
+
                 for dblog in st.DBLogList:
                     dblog_str = dblog.Name
                     dblog_item = self.tree.AppendItem(st_item, dblog_str)
                     self.tree.SetItemData(dblog_item, dblog)
-                   # HL.highlight(self.editor, HL.STYLE_DBLOG, dblog_item)
-        self.tree.Expand(root)
+                    if st.TestNum > 0:
+                        HL.highlight(self.editor, HL.STYLE_DBLOG, dblog)
+            self.tree.Expand(root)
 
     def on_tree_selection(self, event):
         """Handle selection of a tree item and highlight corresponding log text."""
@@ -125,6 +139,9 @@ class LogViewer(wx.Panel):
         elif controlDown and key in (ord('F'), ord('f')):
             search_dialog = sealog.SearchDialog(self)
             search_dialog.Show()
+        elif controlDown and key in (ord('U'), ord('u')):
+            search_dialog = HL.highlight(self.editor,)
+            search_dialog.Show()
         else:
             event.Skip()
 
@@ -133,7 +150,6 @@ class LogViewer(wx.Panel):
             if self.parent.GetPageText(i) == self.TabName:
                 self.parent.SetSelection(i)
                 return
-        
 
 class MainFrame(wx.Frame):
     """MainFrame to manage multiple LogViewer instances using tabs."""
@@ -152,14 +168,15 @@ class MainFrame(wx.Frame):
         self.comboBoxSN.Select(0)
         self.toolbar.AddControl(self.comboBoxSN)
         self.toolbar.AddSeparator()
-        btnGo = buttons.ThemedGenBitmapTextButton(self.toolbar, -1, None, 'Show Logfile', size=wx.Size(100, 26))
+        btnGo = buttons.ThemedGenBitmapTextButton(self.toolbar, -1, None, 'View History', size=wx.Size(100, 26))
         self.toolbar.AddSeparator()
         self.Bind(wx.EVT_BUTTON, self.OnButtonGo, btnGo)
         self.toolbar.AddControl(btnGo)
         self.toolbar.Realize() 
 
         # Create a notebook (tab control)
-        self.notebook = wx.Notebook(self)
+        #self.notebook = wx.Notebook(self)
+        self.notebook  = aui.AuiNotebook(self)
 
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -172,9 +189,9 @@ class MainFrame(wx.Frame):
         m = re.search("([A-Z0-9]{8})", drivesn)
         if len(drivesn) == 8 :
             cursor = self.GetCursor()
-            self.SetCursor(wx.StockCursor(wx.CURSOR_WAIT))
+            self.SetCursor(wx.Cursor(wx.CURSOR_WAIT))
             if self.hist_frame is None or not self.hist_frame.IsShown():
-                self.hist_frame = history_frame(self, drivesn, maxts=100)
+                self.hist_frame = history_frame(self, drivesn, max_history_count)
                 self.hist_frame.Bind(wx.EVT_CLOSE, self.on_hist_frame_close)
                 self.hist_frame.Show()
             else:

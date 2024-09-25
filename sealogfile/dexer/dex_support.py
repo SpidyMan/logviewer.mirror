@@ -326,4 +326,4 @@ def filenameExtraction(filename):
 
 def parseAll(resultsData,outputFile):
     data = resultsData.decode("utf-8")
-    outputFile.write(data.encode("utf-8"))
+    outputFile.write(data.encode('utf-8'))

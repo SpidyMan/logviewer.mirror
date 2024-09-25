@@ -1,11 +1,10 @@
 #log file processer...
-import re,os,math
-import tempfile,ftplib
-import shutil
+import os
+import ftplib
 from pathlib import Path
 from sealogfile.dexer.parse_log import parse_Text_log
 from sealogfile import F3LogFile
-import os,io,zipfile
+import os,zipfile
 #========== FTP Account SETUP ==============
 import configparser
 config = configparser.ConfigParser()
@@ -58,8 +57,9 @@ class log_obj_creater():
         self.parse_log(local_r,local_txt)
         self.logobj = self.setup_logobj(local_txt)
         #remove zip and r ,,, keep only txt file.
-        os.remove(local_zip)
-        os.remove(local_r)
+        
+        # os.remove(local_zip)
+        # os.remove(local_r)
 
     def get_obj(self):
         return self.logobj

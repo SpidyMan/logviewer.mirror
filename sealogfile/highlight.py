@@ -38,14 +38,13 @@ def initStyles(stc_editor):
 def setStyle(stc_editor, start, end, style):
     if start>end:
         (start,end) = (end,start)
-    stc_editor.StartStyling(start, 0xff)
+    stc_editor.StartStyling(start)
     stc_editor.SetStyling(end - start, style)  
 
 def highlight(stc_editor, style, f3logobj, base_start=0):
     span = f3logobj.Span
     if style == STYLE_STATE:
         s = STYLE_STATE
-        
         line = stc_editor.LineFromPosition(span[0] - base_start)
         start = stc_editor.PositionFromLine(line)
         end = stc_editor.PositionFromLine(line+1)-1

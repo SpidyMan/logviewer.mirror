@@ -14,7 +14,7 @@ def parseLog(resultsFile, parseData, outputFile, requested):
         thisRecordNumber += 1
 
         testerHeader = resultsFile.read(testerHeaderSize)
-        thisRecordSize, resultsKey, _ = struct.unpack(testerHeaderFormat,testerHeader)
+        thisRecordSize, resultsKey, collectParametric = struct.unpack(testerHeaderFormat,testerHeader)
         
         if resultsKey in (2,3,7,16,17):
             restOfRecord = resultsFile.read(thisRecordSize-testerHeaderSize)
@@ -30,7 +30,12 @@ def parseLog(resultsFile, parseData, outputFile, requested):
             testerHeader = resultsFile.read(oldTesterHeaderSize)
             restOfRecord = resultsFile.read(thisRecordSize-oldTesterHeaderSize)
             restOfRecord = restOfRecord[:-1]
+        
+        if not (collectParametric & 0x40):
+            collectParametric = None
 
+        if collectParametric:
+            collectParametric = collectParametric & 0x0F
         testNumber, errorCode, blockType = struct.unpack(firmareHeaderFormat,restOfRecord[:firmareHeaderSize])
 
         if blockType == 1:
