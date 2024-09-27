@@ -31,11 +31,6 @@ def parseLog(resultsFile, parseData, outputFile, requested):
             restOfRecord = resultsFile.read(thisRecordSize-oldTesterHeaderSize)
             restOfRecord = restOfRecord[:-1]
         
-        if not (collectParametric & 0x40):
-            collectParametric = None
-
-        if collectParametric:
-            collectParametric = collectParametric & 0x0F
         testNumber, errorCode, blockType = struct.unpack(firmareHeaderFormat,restOfRecord[:firmareHeaderSize])
 
         if blockType == 1:

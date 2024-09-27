@@ -7,16 +7,18 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/viewerextractors.py $
-#                 $Revision: #5 $
-#                 $Change: 1243828 $
-#                 $Author: ben.t.cordova $
-#                 $DateTime: 2017/04/26 13:25:20 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
 import struct, string
-
-from tabledictionary import *
+try:
+  from tabledictionary import *
+except ImportError:
+  from .tabledictionary import *
 
 # Table code pulled from results file
 tableCode = 0
@@ -59,7 +61,6 @@ def getTableDictionaryInfo( thisCode="" ):
   tableNameString = "" # empty default
   colNameList = []     # empty default
   colWidthTuple = ()   # empty default
-
   if thisCode == "": # if no tableCode is passed in (i.e. local tableCode == "")...
     thisCode = tableCode # thisCode = global tableCode
 
@@ -82,7 +83,6 @@ def getTableDictionaryInfo( thisCode="" ):
   except:
     errorFlag = True
     message = "ERROR viewerextractors.py:  Problem grabbing tabledictionary.py info for tableCode %s" % thisCode
-
   return errorFlag, message, tableNameString, colNameList, colWidthTuple
 
 
@@ -94,17 +94,17 @@ def getDataList( resultsData, startIndex=0, stopIndex=-1 ):
   errorFlag = False
   message = ""
   dataList = []
-
+  if not isinstance(resultsData, str):resultsData = resultsData.decode(encoding="ISO-8859-1")  # Need string
   if stopIndex == -1:
     stopIndex = len(resultsData.split(','))
 
   try: # grab resultsData
-    dataList = resultsData.split( ',' )
+    dataList = resultsData.split(',')
 
   except:
     errorFlag = True
     message = "ERROR viewerextractors.py:  Problem parsing resultsData for tableCode %s" % tableCode
-
+  
   return errorFlag, message, dataList[ startIndex:stopIndex ]
 
 
@@ -149,7 +149,6 @@ def formatData( colNameList, colWidthTuple, dataList ):
   errorFlag = False
   message = ""
   formattedData = ""
-
   # Loop through each data item & format with the correct width which comes from the imported dictionary
   for i in range( len( dataList ) ):
     try:
@@ -186,9 +185,7 @@ class ViewerFirstBlock:
     global colNameList
     global colWidthTuple
     global dummyDataList
-
     formattedData = resultsData # default return value, in case exceptions occur
-
     # Special case:  process scripts write block 11000 with testNumber of 9999 for parametric table P_EVENT_SUMMARY
     if testNumber != 9999:
 
@@ -200,7 +197,8 @@ class ViewerFirstBlock:
         if errorFlag:
           resultsHandlers.writeToTextFile( "\n" + message, 1 )
         else:
-          errorFlag, message, dataList = getDataList( resultsData[2:] )
+          
+          errorFlag, message, dataList = getDataList( resultsData[2:])
           if errorFlag:
             resultsHandlers.writeToTextFile( "\n" + message, 1 )
 
@@ -218,7 +216,6 @@ class ViewerFirstBlock:
         if colNameList != ["*"]: # no column names if asterik
           # Match number of colNames & number of colData
           errorFlag, message, dummyDataList = matchColCounts( dataList, colNameList )
-
           try: # write column names but only if the column name is not an asterik
             errorFlag, message, txtData = formatData( colNameList, colWidthTuple, colNameList )
             if not errorFlag:
@@ -264,7 +261,7 @@ class ViewerSubBlock:
     global colWidthTuple
     global dummyDataList
     formattedData = resultsData # default return value, in case exceptions occur
-
+    if not isinstance(formattedData, str):formattedData = formattedData.decode(encoding="ISO-8859-1")  # Need string
     errorFlag, message, dataList = getDataList( resultsData )
     if errorFlag:
       resultsHandlers.writeToTextFile( message, 1 )
@@ -274,7 +271,7 @@ class ViewerSubBlock:
         errorFlag, message, txtData = formatData( colNameList, colWidthTuple, ( dataList + dummyDataList ) )
         if not errorFlag:
           resultsHandlers.writeToTextFile( txtData, 1 )
-          formattedData += "\n%s" % ( txtData )
+          formattedData += "\n%s" % ( txtData )          
         if message:
           resultsHandlers.writeToTextFile( "%s for tableCode %s" % ( message, tableCode ), 1 )
       except:
@@ -297,8 +294,9 @@ class FaultCode:
     global colNameList
     global colWidthTuple
     global dummyDataList
-    formattedData = resultsData # default return value, in case exceptions occur
 
+    formattedData = resultsData # default return value, in case exceptions occur
+    if not isinstance(formattedData, str):formattedData = formattedData.decode(encoding="ISO-8859-1")  # Need string
 
     errorFlag, message, tableCode = getTableCode( resultsData ) # grab tableCode from resultsData
     if errorFlag:
@@ -373,7 +371,6 @@ class FirmwareMessage:
   def __call__( self, resultsData, testNumber, collectParametric, counters, resultsHandlers, iserOptions, paramNames, supportFiles, *args, **kwargs ):
 
     formattedData = resultsData # default return value, in case exceptions occur
-
     try:
       # Grab the message code from the data; value is a tuple so just grab the first part
       messageCode = resultsData
@@ -402,13 +399,12 @@ class TestParameters:
 
    def __call__( self, resultsData, testNumber, collectParametric, counters, resultsHandlers, userOptions, paramNames, *args, **kwargs ):
       parameterLine = ""
-
       try:
          # Grab the table code; value is a tuple so just grab the first part
          parameterValueIndex = struct.unpack( "H", resultsData[0:2] )[0]
          parameterValueCount = struct.unpack( "H", resultsData[2:4] )[0]
          parameterNameCode = struct.unpack( "H", resultsData[4:6] )[0]
-         parameterValueType = resultsData[6]
+         parameterValueType = resultsData[6:7]
 
       except:
          message = "\nERROR viewerextractors.py:  Block 3065:  Problem unpacking header data"
@@ -421,16 +417,16 @@ class TestParameters:
            parameterLine = "\n%26s " % paramNames[parameterNameCode]  # Initialize to parameter name string from definition file.
            resultsHandlers.writeToTextFile( parameterLine, 0 )  # Write to results text file without a trailing CR/LF
         if parameterValueCount > 0:  # Add parameter value(s) if not a boolean.
-           if parameterValueType == 'l':
+           if parameterValueType == b'l':
               parameterValue = struct.unpack( "L", resultsData[7:11] )[0]  # Get 4 byte integer value
               parameterValueString = "%10u (0x%08lx)" % ( parameterValue, parameterValue )
-           elif parameterValueType in "cd":
+           elif parameterValueType in b"cd":
               parameterValue = struct.unpack( "H", resultsData[7:9] )[0]  # Get 2 byte unsigned integer value
               parameterValueString = "%10u (0x%04x)" % ( parameterValue, parameterValue )
-           elif parameterValueType in "fi":
+           elif parameterValueType in b"fi":
               parameterValue = struct.unpack( "h", resultsData[7:9] )[0]  # Get 2 byte integer value
               parameterValueString = "%10d (0x%04x)" % ( parameterValue, parameterValue )
-           elif parameterValueType == 'q':
+           elif parameterValueType == b'q':
               parameterValue = struct.unpack( "Q", resultsData[7:15] )[0]  # Get 8 byte integer value
               parameterValueString = "%10u (0x%016lx)" % ( parameterValue, parameterValue )
            else:
@@ -455,7 +451,7 @@ class ScriptComment:
 
   def __call__( self, resultsData, testNumber, collectParametric, counters, resultsHandlers, *args, **kwargs ):
     # Replace the nul character otherwise text file looks funny
-    resultsData = resultsData.replace( "\00", "" )
+    resultsData = resultsData.replace( b"\00", b"" )
     resultsHandlers.writeToTextFile( resultsData )
     return resultsData
 
@@ -464,16 +460,19 @@ class ScriptComment:
 # 4000 block code from firmware; write newline(s) to text file
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class WriteNewLine:
+
   def __call__( self, resultsData, testNumber, collectParametric, counters, resultsHandlers, *args, **kwargs ):
-    count_ = struct.unpack( "i", resultsData[0:4] )
-    resultsHandlers.writeToTextFile( "\n"*count_ )
+    count = struct.unpack( "i", resultsData[0:4] )
+    resultsHandlers.writeToTextFile( "\n"*count )
     return resultsData
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 4001 block code from firmware; write space(s) to text file
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class WriteSpace:
+
   def __call__( self, resultsData, testNumber, collectParametric, counters, resultsHandlers, *args, **kwargs ):
-    count_ = struct.unpack( "i", resultsData[0:4] )
-    resultsHandlers.writeToTextFile( " "*count_ )
+    count = struct.unpack( "i", resultsData[0:4] )
+    resultsHandlers.writeToTextFile( " "*count )
     return resultsData

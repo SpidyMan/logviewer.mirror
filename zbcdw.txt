@@ -1,3 +1,5 @@
 DEX Version: 2.42 
 Dictionary Rev: 3598
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ERROR:  Cannot open paramCodeFile: param_cd.h

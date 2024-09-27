@@ -7,11 +7,11 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/writeresultsfunctions.py $
-#                 $Revision: #2 $
-#                 $Change: 319143 $
-#                 $Author: rebecca.r.hepper $
-#                 $DateTime: 2010/12/16 07:36:23 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
 import struct,time,types,array
@@ -26,7 +26,7 @@ def ESGSaveResults(data,collectParametric=0):
   recordSize = 5 + lenData  # 4 + (data - 1) + 2
 
   # This array will hold the entire record: header, data, and crc.
-  a1 = array.array('B',struct.pack('<Hb %ssH'%lenData,recordSize,0,data,0))
+  a1 = array.array('B',struct.pack('<Hb %ssH'%lenData,recordSize,0,data.encode(encoding="ISO-8859-1",errors="surrogateescape"),0))
 
   # Take the 'results key' off the first byte of data and put it into the header.
   a1[2] = a1[3]
@@ -41,13 +41,13 @@ def ESGSaveResults(data,collectParametric=0):
   # Calculate a CRC using a CM ScriptService and put it at the end of the record.
   # The CRC function returns a 32 bit value, but we pack it into a 16 bit value. in order to make a smaller overall record.
   # Use an arbitrary CRC seed value (604 == 'throwing missiles') because with a seed of 0 and data of all zeroes this 'CRC' will return a 0.
-  crc = ScriptTools.calcCRCBlock(a1.tostring(),len(a1)-2,604)
+  crc = ScriptTools.calcCRCBlock(str(a1.tobytes()),len(a1)-2,604)
 
   a1[-2] = (crc>>8)&0xFF  # High Byte
   a1[-1] = crc&0xFF       # Low Byte
 
   # CM ScriptService to write data to the results file
-  WriteToResultsFile(a1.tostring())
+  WriteToResultsFile(a1.tobytes())
 
 
 def writeInterpDataBlock(blockCode,data,resultsKey,testNum=9999,collectParametric=0):  
@@ -58,8 +58,8 @@ def writeInterpDataBlock(blockCode,data,resultsKey,testNum=9999,collectParametri
   # Make sure the data is a string
   blockData = ""   
   for piece in data:
-     if not isinstance(piece,types.StringType):
-        piece = `piece`
+     if not isinstance(piece,str):
+        piece = repr(piece)
      blockData  = blockData  + piece
 
   # Set up size & blockcode for interpreted data; size is 2 bytes block size, 2 bytes block code plus the actual data 
@@ -81,7 +81,7 @@ def writeInterpDataBlock(blockCode,data,resultsKey,testNum=9999,collectParametri
   collectParametric = collectParametric | 0x40
 
   # Write chunks of data until data is exhausted
-  while 1:
+  while True:
     if not blockData: break
     chunk = blockData[:cspace]
     blockData = blockData[cspace:]

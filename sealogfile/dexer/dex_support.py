@@ -199,9 +199,7 @@ def writeScriptTableHeader(parseData, outputFile):
         header = "\n"
     else:
         header = ""
-        
-    
-          
+
     if parseData['withFilename']:
         header += "FILENAME,"
     header += "SERIAL_NUM,TRANS_SEQ,EVENT_DATE,SBR,TEST_SEQ_EVENT,SPC_ID,"
@@ -326,4 +324,4 @@ def filenameExtraction(filename):
 
 def parseAll(resultsData,outputFile):
     data = resultsData.decode("utf-8")
-    outputFile.write(data.encode('utf-8'))
+    outputFile.write(data.encode("utf-8"))

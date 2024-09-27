@@ -8,17 +8,20 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/dexrpt.py $
-#                 $Revision: #3 $
-#                 $Change: 449292 $
-#                 $Author: alan.a.hewitt $
-#                 $DateTime: 2012/04/30 11:29:44 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
 
 import traceback,getopt,string,sys,time,os,types,fnmatch,copy,datetime
 from stat import ST_MTIME
-from parseresults import ResultsParser,VERSION
+try:
+  from .parseresults import ResultsParser,VERSION
+except ImportError:
+  from parseresults import ResultsParser,VERSION
 
 
 usageMsg = """
@@ -73,9 +76,9 @@ usageMsg = """
       - output files are saved in the directory script is run from; -d overrides this
 
     EXAMPLES:
-      dexrpt.py -i /var/merlin/results/03-1-0.rp1
+      dexrpt.py -i /var/merlin3/results/03-1-0.rp1
       dexrpt.py -i 03-1-0.rp1 -t 107,175,1
-      dexrpt.py -i /var/merlin/results -s 07/01/05 -e 08/01/05
+      dexrpt.py -i /var/merlin3/results -s 07/01/05 -e 08/01/05
     ***********************************************************************************************************************
     """ % (VERSION)
 
@@ -84,7 +87,7 @@ def parseArgsIntoList(args):
   argList = []
   myList = args.split(",")
   for item in myList:
-    if not isinstance(item,types.IntType):
+    if not isinstance(item,int):
       item = int(item)
     argList.append(item)
   return argList
@@ -94,7 +97,7 @@ def parseArgsIntoStringList(args):
   argList = []
   myList = args.split(",")
   for item in myList:
-    if not isinstance(item,types.IntType):
+    if not isinstance(item,int):
       item = str(item)
     argList.append(item)
   return argList
@@ -104,9 +107,9 @@ if __name__ == "__main__":
 
   # Define a usage summary function
   def usage(errMsg=""):
-    print usageMsg
-    print errMsg
-    print "\n"
+    print(usageMsg)
+    print(errMsg)
+    print("\n")
     sys.exit()
 
   def convertDate(date):
@@ -297,9 +300,8 @@ if __name__ == "__main__":
     fileDict = {}
     newList = []
     # Create list with time of last modification and full file name
-    l = [(os.path.getmtime(x),x) for x in fileList]
+    l = sorted([(os.path.getmtime(x),x) for x in fileList])
     # Oldest files are at the beginning of the list after the sort
-    l.sort()
     for modTime,file in l:
       try:
          name,extension = file.split(".")
@@ -309,7 +311,7 @@ if __name__ == "__main__":
       # because the list is sorted, it should end up being the newest file (i.e last run) in the dictionary
       fileDict[name] = file
     # Create a list of files (file name including extension) from the dictionary
-    for key in fileDict.keys():
+    for key in list(fileDict.keys()):
       newList.append(fileDict[key])
     # Reset the original list variable
     fileList = []
@@ -346,8 +348,8 @@ if __name__ == "__main__":
 
     ResultsParser.processResultsFile(userOptions["inputFile"])
 
-    print "\nFinished parsing %s" % userOptions["inputFile"]
+    print("\nFinished parsing %s" % userOptions["inputFile"])
     del ResultsParser.resultsHandlers
 
   if not fileList:
-    print "\nNo results files to process\n"
+    print("\nNo results files to process\n")

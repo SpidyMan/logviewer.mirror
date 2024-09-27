@@ -8,16 +8,19 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/dex.py $
-#                 $Revision: #4 $
-#                 $Change: 449292 $
-#                 $Author: alan.a.hewitt $
-#                 $DateTime: 2012/04/30 11:29:44 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
 
 import getopt,string,traceback,sys,time,os
-from parseresults import ResultsParser,VERSION
+try:
+  from .parseresults import ResultsParser,VERSION
+except ImportError:
+  from parseresults import ResultsParser,VERSION
 
 
 if __name__ == "__main__":
@@ -34,7 +37,7 @@ if __name__ == "__main__":
     USAGE:  dex.py -i resultsFile -d dir -n outputFileName -c paramFile -e errorCodeFile -f pErrorCodeFile -m messages -t -p -s -b
     WHERE:
 
-    OPTION  ARGUMENT        DESCRdexIPTION
+    OPTION  ARGUMENT        DESCRIPTION
 
       -i    resultsFile     mandatory; path to and name of binary/ASCII results file
  				       NOTE: if running on a Windows Box, and path/file contains spaces use ""
@@ -79,9 +82,9 @@ if __name__ == "__main__":
       - messages file path is dir script is run from; -m can override this
 
     EXAMPLES:
-      dex.py -i /var/merlin/results/03-1.rp1
+      dex.py -i /var/merlin3/results/03-1.rp1
       dex.py -i 03-1.rp1 -n myFile.txt -t
-      dex.py -i 03-1.rp1 -c /var/merlin/cfgs/anytest/params
+      dex.py -i 03-1.rp1 -c /var/merlin3/cfgs/anytest/params
     ***********************************************************************************
     """ % (VERSION)
     print(msg)
@@ -208,11 +211,9 @@ if __name__ == "__main__":
   if userOptions.get("textResultsOnly",0) and userOptions.get("paramResultsOnly",0):
     errMsg = "ERROR:  Options indicate neither a parametric or text results file should be produced"
     usage(errMsg)
-  print(userOptions)
   ResultsParser.createDEXHandlers(userOptions,startTime)
 
   # We must tell the embedded/shared callback function to NOT save the results to the results file.
   ResultsParser.saveToResultsFile = 0
-  print(resultsFileName)
   errNum, errMsg = ResultsParser.processResultsFile(resultsFileName)
   print("DEX Run-Time errorCode: ", errNum, errMsg)

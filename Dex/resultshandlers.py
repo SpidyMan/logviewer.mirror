@@ -7,17 +7,22 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/resultshandlers.py $
-#                 $Revision: #3 $
-#                 $Change: 449292 $
-#                 $Author: alan.a.hewitt $
-#                 $DateTime: 2012/04/30 11:29:44 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
-import os
-from . import tabledictionary
+from base64 import decode
+import os, sys
+import time
+try: 
+  from tabledictionary import tableRevision
+except ImportError:
+  from .tabledictionary import tableRevision
 import fnmatch
-from . import viewerextractors 
+
 # Define TraceMessage if we are not running in the Gemini script environment.
 try:     TraceMessage
 except:  
@@ -34,18 +39,20 @@ class Stream:
 ####################################################################        
     def write(self, line):
         #line = "%s "%time.time() + line
-        if isinstance(line, str):
-           line = line.encode(ENCODING)
+        if not isinstance(line, str): #how to check 
+           line = line.decode(encoding="ISO-8859-1",errors="surrogateescape")
+
         if Stream.displayMsgFunc and Stream.PortId:
            #Stream.displayMsgFunc(line)
            #Stream.displayMsgFunc.put((line,0))
            Stream.displayMsgFunc.send((line,0,Stream.PortId))
-        else: print(line)            
+        else: 
+            print(line, end=' ')            
 ####################################################################      
     def flush(self):
         pass
 ####################################################################    
-    def writelines(self, inline):
+    def writelines(self, inlines):
         for line in inlines:
             self.write(line)
 ####################################################################
@@ -62,7 +69,6 @@ class ResultsHandlers:
   
   def __init__(self,userOptions,dexVersion="",startTime=0):
     self.startTime = startTime
-    
     self.textResultsOnly = userOptions.get("textResultsOnly",0)    # Variable to indicate whether only the text results should be produced
     self.paramResultsOnly = userOptions.get("paramResultsOnly",0)  # Variable to indicate whether only the parametric results should be produced 
     self.openWBMode = userOptions.get("openWBMode",0)              # Variable to indicate if the text file should be opened in 'wb' mode 
@@ -70,7 +76,6 @@ class ResultsHandlers:
     textFileName = userOptions.get("textFileName","")
     outputFileName = userOptions.get("outputFileName")
     winFOFInstance = userOptions.get("winFOFInstance")
-    
     # Do not deal with parametric counters when only a text file is created unless user has chosen option to have TEST_TIME_BY_TEST table written to text file
     if not self.textResultsOnly or userOptions.get("testTimeTable",0):
       self.setDefaults()        
@@ -79,7 +84,10 @@ class ResultsHandlers:
     
     # Only import parametric tools if necessary
     if not self.textResultsOnly:
-      import parametricextractors
+      try:
+        import parametricextractors
+      except:
+        from . import parametricextractors
       parametricHandlers = {
            # Parametric block handlers
            -7   : [parametricextractors.StartSeq()],
@@ -89,7 +97,10 @@ class ResultsHandlers:
     
     # Only import text tools if necessary
     if not self.paramResultsOnly:
-                    
+      try:
+        import viewerextractors
+      except:
+        from . import viewerextractors
       viewerHandlers = {
            # Viewer block handlers
             3065 : [viewerextractors.TestParameters()],
@@ -117,11 +128,62 @@ class ResultsHandlers:
           self.resultsHandlers[key] = self.resultsHandlers[key] + parametricHandlers[key]
         else:
           self.resultsHandlers[key] = value
+ 
+    # Set up the parametric output file if necessary
+    if self.textResultsOnly == 1:
+      self.xmlResultsFile = None
+    else:
+      try:
+        # Use a Script Service if running in the Gemini script environment
+        # File must be opened in append mode; while firmware is transitioning to dblog style data, users must 
+        # run STPGPD first and dblog second so this script must append to the XML file that STPGPD creates
+        XmlResultsFile.open('a')
+        self.xmlResultsFile = XmlResultsFile
+      except:
+        # Used when running stand alone from the command line
+        # Filename will be the same as the input results file name
+        # Output dir may be passed in by user, otherwise defaults to directory script is run from
+        fileName = "%s.xml" % outputFileName.lower()
+        self.parametricFile = os.path.join(outputFileDir,fileName) 
+        # Use write mode so any existing file is truncated
+        self.xmlResultsFile = open(self.parametricFile,'w')  
+      
+      # Host code expects this tag at the beginning of the dblog data and a corresponding ending tag
+      self.xmlResultsFile.write("<parametric_dblog>")
+      self.xmlResultsFile.flush()
+            
+    # Set up the text output file if necessary
+    if self.paramResultsOnly == 1:
+      self.txtResultsFile = None
+    else: 
+      try:
+        # WINFOF - Stream output to screen
+        if winFOFInstance:
+          self.txtResultsFile = Stream()
+        else:
+          # Use a Script Service if running in the Gemini script environment
+          TextResultsFile.open()
+          self.txtResultsFile = TextResultsFile
+      except:
+        # Used when running stand alone from the command line
+        # Filename will be the same as the input results file name unless user passed in a file name 
+        # Output dir may be passed in by user, otherwise defaults to directory script is run from
+        if textFileName:
+          fileName = textFileName
+        else:
+          fileName = "%s.txt" % outputFileName.lower()
+        self.viewerFile = os.path.join(outputFileDir,fileName)
+        # Use write mode so any existing file is truncated
+        if self.openWBMode:
+           self.txtResultsFile = open(self.viewerFile,'wb')
+        else:
+           self.txtResultsFile = open(self.viewerFile,'w')
 
-      # Write DEX version & dictionary revisions at the top of the results file
+      # Write DEX version & dictionary revisions at the top of the results file\      
       self.txtResultsFile.write("DEX Version: %s \n" % dexVersion)
       self.txtResultsFile.write("Dictionary Rev: %s\n" % tableRevision)
       self.txtResultsFile.write("~"*76 + "\n")
+
       self.txtResultsFile.flush()
   
   
@@ -165,6 +227,8 @@ class ResultsHandlers:
     
   # Write data to text output file 
   def writeToTextFile(self,data,returnChar=0):
+    if not isinstance(data, str):
+        data = data.decode(encoding="ISO-8859-1",errors="surrogateescape")
     self.txtResultsFile.write(data)
     # Add carriage return & line feed 
     if returnChar == 1:
@@ -173,6 +237,29 @@ class ResultsHandlers:
     self.txtResultsFile.flush()
        
     
+  def __del__(self):
+    if self.paramResultsOnly == 0:
+      scriptTime = time.time() - self.startTime
+      msg = "DEX run time: %.3f " % scriptTime
+      self.txtResultsFile.write(msg)
+            
+      try:      
+        TraceMessage(msg)
+      except:
+        # With python-2.3 the garbage collection must be different
+        # TraceMessage is not available at this point so it must be redefined
+        try:  
+          TraceMessage
+        except:  
+          def TraceMessage(msg): print(msg)
+        TraceMessage(msg)
+
+      self.txtResultsFile.close()
+    
+    if self.textResultsOnly == 0:
+      self.xmlResultsFile.write("</parametric_dblog>")
+      self.xmlResultsFile.flush()
+      self.xmlResultsFile.close()
     
  
   def get(self,key):
@@ -247,8 +334,10 @@ class RptResultsHandlers(ResultsHandlers):
     
     # Seq num the script registered last
     self.lastSeqNum = ""  
-    
-    import rptextractors
+    try:
+      import rptextractors
+    except:
+      from . import rptextractors
     rptParametricHandlers = {
        # Parametric block handlers
       11000 : [rptextractors.RptParametricFirstBlock(),],

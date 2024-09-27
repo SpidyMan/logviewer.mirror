@@ -8,20 +8,20 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/dexrptgui.py $
-#                 $Revision: #3 $
-#                 $Change: 413834 $
-#                 $Author: alan.a.hewitt $
-#                 $DateTime: 2011/12/13 09:54:55 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
 
 
-from Tkinter import *
-from tkFileDialog import askopenfilename, askdirectory
-from tkMessageBox import showerror,showinfo
-from parseresults import VERSION
-import os,string,time,cPickle
+from tkinter import *
+from tkinter.filedialog import askopenfilename, askdirectory
+from tkinter.messagebox import showerror,showinfo
+from .parseresults import VERSION
+import os,string,time,pickle
 import Pmw
 
 
@@ -524,7 +524,7 @@ class DEXRPTGUI:
 
   def help(self):
     try:
-      from dexrpt import usageMsg
+      from .dexrpt import usageMsg
       self.dialogWindow(usageMsg, "HELP")
     except:
       showerror("Help", "Error displaying help information")
@@ -565,7 +565,7 @@ class GUIDefaults:
     self.initialGUIDefaults = initialGUIDefaults
     try:
       self.historyFileName = filename
-      self.guiDefaults = cPickle.load(open(self.historyFileName))
+      self.guiDefaults = pickle.load(open(self.historyFileName, 'rb'))
     except:
       self.guiDefaults = self.initialGUIDefaults.copy()
 
@@ -573,7 +573,7 @@ class GUIDefaults:
   def __save(self):
     # Try to save a value to the history file
     try:
-      cPickle.dump(self.guiDefaults,open(self.historyFileName,"w"))
+      pickle.dump(self.guiDefaults,open(self.historyFileName,"wb"))
     except:
       pass
 
@@ -603,10 +603,10 @@ if __name__ == "__main__":
   try:
     uid = os.getuid()
   except:
-    print "Cannot determine user id. (Typical on windows)"
+    print("Cannot determine user id. (Typical on windows)")
     uid = 999
   if 0 == uid:
-    print "Please do not run as user root."
+    print("Please do not run as user root.")
     sys.exit()
 
   gui = DEXRPTGUI()

@@ -7,11 +7,11 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/parametricextractors.py $
-#                 $Revision: #6 $
-#                 $Change: 367517 $
-#                 $Author: rebecca.r.hepper $
-#                 $DateTime: 2011/06/22 09:00:45 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
 import types,struct,traceback,string,os
@@ -37,7 +37,7 @@ try:
   TraceMessage
 except:
   def TraceMessage(msg):
-    print msg
+    print(msg)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,7 +94,7 @@ def maskData(resultsData,colMasks,userOptions):
             finalList.append(resultsDataList[i])
 
         # Turn the list back into a comma separated string
-        resultsData  = string.join(finalList,",")
+        resultsData  = ",".join(finalList)
   except:
     err = 1
     msg = "Error masking data"
@@ -112,6 +112,9 @@ def formatColumnNames(resultsData,testNumber,tableType,colMasks,userOptions):
   colCount = 0
 
   try:
+    if not isinstance(resultsData, str):
+      resultsData = resultsData.decode(encoding="ISO-8859-1")  # Need string
+    
     err, msg, resultsData = maskData(resultsData,colMasks,userOptions)
 
     # Even if an error occurred while masking the data, try adding the header columns
@@ -143,6 +146,9 @@ def formatTableData(resultsData,counters,testNumber,tableType,colMasks,collectPa
   msg = "OK"
 
   try:
+    if not isinstance(resultsData, str):
+      resultsData = resultsData.decode(encoding="ISO-8859-1")  # Need string
+      
     err, msg, resultsData = maskData(resultsData,colMasks,userOptions)
     # Even if an error occurred while masking the data, try adding the header columns
 
@@ -156,7 +162,7 @@ def formatTableData(resultsData,counters,testNumber,tableType,colMasks,collectPa
       testSeqEvent = 1
 
     # Find the seq number
-    if type(seqNum) is types.TupleType:
+    if isinstance(seqNum, tuple):
       seqNum = seqNum[0]
 
     # Special case:  parametric table P_EVENT_SUMMARY which does not have an SPC_ID column
@@ -223,7 +229,7 @@ class ParametricFirstBlock:     # 11000 block code; 1st block of data; contains 
       skipParsing = 0
       if tableMatrix and not runDexRpt and not testNumber == 9999:
         # If the tableCode and the spc_id is not in the tablematrix, skip processing this data
-        if currentTableCode in tableMatrix.keys():
+        if currentTableCode in list(tableMatrix.keys()):
           if not (str(collectParametric) in str(tableMatrix[currentTableCode][1])):
             skipParsing = 1
         else:

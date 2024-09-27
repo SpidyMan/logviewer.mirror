@@ -7,15 +7,15 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/rptextractors.py $
-#                 $Revision: #2 $
-#                 $Change: 319143 $
-#                 $Author: rebecca.r.hepper $
-#                 $DateTime: 2010/12/16 07:36:23 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
 
-from parametricextractors import *
+from .parametricextractors import *
 
 currentFileObject = ""
 # Lookup dictionary of file objects and table names

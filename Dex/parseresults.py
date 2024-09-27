@@ -8,16 +8,17 @@
 # ******************************************************************************
 #
 # VCS Information:
-#                 $File: //depot/TCO/DEX/parseresults.py $
-#                 $Revision: #9 $
-#                 $Change: 449292 $
-#                 $Author: alan.a.hewitt $
-#                 $DateTime: 2012/04/30 11:29:44 $
+#                 $File$
+#                 $Revision$
+#                 $Change$
+#                 $Author$
+#                 $DateTime$
 #
 # ******************************************************************************
 
 # INCREMENT THIS VERSION NUMBER FOR EACH NEW RELEASE OF DEX
-VERSION = "2.42"
+#VERSION = "2.42"
+VERSION = "3.00"
 
 # reference:
 # -> http://yeti/html/esg_tse_firmware-tester_data_record_format_specification.html (old)
@@ -95,8 +96,10 @@ VERSION = "2.42"
 
 
 import sys,time,traceback,struct,binascii,types,os,fnmatch,zipfile
-
-from .resultshandlers import ResultsHandlers
+try:
+  from .resultshandlers import ResultsHandlers
+except ImportError:
+  from resultshandlers import ResultsHandlers
 
 VERBOSE = 0
 
@@ -114,8 +117,17 @@ STATE_TEST_DONE = "Test Done"
 # Define TraceMessage if we're not running in the Gemini script environment.
 try:     TraceMessage
 except:
-  def TraceMessage(msg): print(msg)
+  def TraceMessage(msg): 
+      try: 
+        print(msg)
+      except UnicodeEncodeError:
+        print(msg.encode(encoding="ISO-8859-1",errors="surrogateescape"))
 
+
+try:
+   from ErrorCodes import errCodes
+except:
+   errCodes = {}
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the class here, and make a global instance below.
@@ -256,7 +268,7 @@ class _ResultsParser:
   # the ResultsParser class is created.  This function was created to allow passing of args when run from the command line.
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   def rptCreateHandlers(self,userOptions,startTime):
-    from resultshandlers import RptResultsHandlers
+    from .resultshandlers import RptResultsHandlers
 
     self.userOptions = userOptions
 
@@ -293,8 +305,7 @@ class _ResultsParser:
     # New results files will only contain 11000 block codes
     # Keys method may not present the keys in numerical order;
     # therefore sort is required as the data must be written in order or the XML will get rejected by FIS
-    blockCodes = list(self.pEventSummary.keys())
-    blockCodes.sort()
+    blockCodes = sorted(list(self.pEventSummary.keys()))
 
     for thisBlockCode in blockCodes:
       if thisBlockCode == 11000: # skip "special" DEX block codes
@@ -302,9 +313,8 @@ class _ResultsParser:
 
         # Grab the failing information from the failure header DEX populates for each failing test
         # The drive can pass and have failed tests in the failureHeader
-        failKeys = list(failureHeader.keys())
+        failKeys = sorted(list(failureHeader.keys()))
         # Key is script occurrence, want keys in order because if there are multiple failures that match signature, the first matching failure should be used
-        failKeys.sort()
         for j in failKeys:
           testNum,errorCode,failSeqOccurrence,failTestSeqEvent,failTestScriptEvent,failPortID = failureHeader[j]
           failScriptOccurrence = j
@@ -441,7 +451,6 @@ class _ResultsParser:
 
     # Format CM code uses to write date/time stamp into results file with time.strftime
     timeFormat = "%b %d %Y-%H:%M:%S"
-
     try:
       # Look for keyword written in by the CM code specifically for this parser which contains test time for a single test
       if resultsData.find("**TestCompleted=") != -1:
@@ -504,7 +513,7 @@ class _ResultsParser:
       # Look for keyword written in by scripts; they write the parameter name which goes in the TEST_TIME_BY_TEST table
       # Limit the string to 128 characters; need some limit to ensure process does not go crazy and overload the CM
       elif resultsData.find("**PRM_NAME=") != -1:
-        self.paramNameByTest = resultsData.split("=")[1][0:128]
+        self.paramNameByTest = resultsData.split("=",1)[1][0:128]
 
       else:
         # Look for last ScriptComment in results file to get the end time of the script which is used to calculate total script run time
@@ -599,7 +608,7 @@ class _ResultsParser:
             # There could be two sets of comments on a line, just use the first one & consider the rest junk data
             msg,junk = msg.split("*/",1)
             msg = msg.rstrip("\n ")
-            if int(line[0]) in messages:
+            if messages.has_key(int(line[0])) and int(line[0]) !=0:
               # If duplicates exist, the existing message for the code will be overwritten by the next message
               msg = "WARNING:  Duplicate code - %s - in file(s): %s" % (int(line[0]),fileNames)
               TraceMessage(msg)
@@ -628,6 +637,8 @@ class _ResultsParser:
      descriptions = {}
      lines = []
      errorCodeFiles = []
+     if errCodes:
+        return errCodes
 
      # Read in the TSE error code file
      try:
@@ -669,7 +680,6 @@ class _ResultsParser:
 
      msgDict = {}
      lines = []
-
      # Read in the TSE messages file
      try:
        f = open(self.userOptions["messagesFile"])
@@ -692,10 +702,13 @@ class _ResultsParser:
   # Calculate a CRC the same way the CM/script code & self-test/IO code does
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   def calcCRC(self,data,sizein,crc):
-    for i in range(0,sizein):
+    for i in range(0,sizein): 
       c1 = crc & 0x00AA
-      c2 = c1 ^ ord(data[i])
-      crc = crc + (c2 & 0x00FF)
+      try:
+        c2 = c1 ^ ord(data[i])
+      except:
+        c2 = c1 ^ data[i]
+      crc = crc + (c2 & 0x00FF)# & 0xFFFF #Protect data overflow.
     return crc
 
 
@@ -733,8 +746,10 @@ class _ResultsParser:
   def resultsCallBack(self,data,currentTemp=None,drive5=None,drive12=None,collectParametric=None,currentTime=None):
 
     # WinFOF does a callback of this function and relies on this piece of code to write data to the results file
+    if not isinstance(data, str):
+        data = data.decode(encoding="ISO-8859-1",errors="surrogateescape")
     if self.saveToResultsFile:
-      from writeresultsfunctions import ESGSaveResults
+      from .writeresultsfunctions import ESGSaveResults
       ESGSaveResults(data,collectParametric)
 
     # If our caller is reading from a results file, they will have a currentTime to pass in here.
@@ -742,16 +757,16 @@ class _ResultsParser:
     if None == currentTime: currentTime = time.time()
 
     # Cut off the one byte results key
-    resultsSector = data[1:]
+    resultsSector = data[1:].encode(encoding="ISO-8859-1",errors="surrogateescape") #encode to bytes
 
     # Assume this is a new 5 byte firmware header
     # Every firmware header has 2 bytes test number, 2 bytes error code and 1 byte block type
     firmareHeaderFormat = ">hHb"
     firmareHeaderSize = struct.calcsize(firmareHeaderFormat)
-
+    
     # Validate the size
     if len(resultsSector) < firmareHeaderSize:
-      msg = self.errorMsg + "Invalid firmware header.  received: %s bytes, expected: >= %s bytes." % (len(resultsSector),dataHeaderSize)
+      msg = self.errorMsg + "Invalid firmware header.  received: %s bytes, expected: >= %s bytes." % (len(resultsSector),firmareHeaderSize)
       TraceMessage(msg)
       return(1,msg)
 
@@ -798,7 +813,7 @@ class _ResultsParser:
         testNumber,errorCode,resultsData = data
 
     # This msg is used below where we raise Exceptions.
-    errMsg = "==> testNumber: %s (x%04X) errorCode: %s" % (testNumber,testNumber,errorCode)
+    errMsg = "==> testNumber: %s (x%04X) errorCode: %s" % (testNumber,testNumber,errorCode)   
 
     # If the high bit is set in the test number, this indicates either a negative test number or partial results.
 
@@ -810,7 +825,6 @@ class _ResultsParser:
 
     # Look for a valid negative test number.  Do this before masking off the high bit in the test number.
     if testNumber < 0 and testNumber >= -44:
-
       # Look-up the resultsHandler and run it.
       resultsHandler = self.resultsHandlers.get(testNumber)
       # At the start of a seq, reset the seq specific parametric counters & get default counter values
@@ -901,6 +915,7 @@ class _ResultsParser:
         blockData = resultsData[4:blockSize]
         # Look up the results handler for this block and run it.
         resultsHandler = self.resultsHandlers.get(blockCode)
+        
         if resultsHandler:
           for item in range(len(resultsHandler)):
             self.formattedData=resultsHandler[item](blockData,testNumber,collectParametric,self.counters,self.resultsHandlers,self.userOptions,self.paramNames,self.supportFiles)
@@ -995,7 +1010,6 @@ class _ResultsParser:
     resultsFileTotalBytes = resultsFile.tell()
     resultsFile.seek(0, 0) # byte0
     thisRecordNumber = 0
-
     # While not EOF & not "FOF Final Error Code"
     while resultsFile.tell() < resultsFileTotalBytes:
 
@@ -1018,8 +1032,14 @@ class _ResultsParser:
       testerHeaderSize = struct.calcsize(testerHeaderFormat)
 
       # Start off with the assumption this is a new style tester header
-      testerHeader = resultsFile.read(testerHeaderSize)
-
+      testerHeader = b""
+      while len(testerHeader) < testerHeaderSize:
+        nextWord = resultsFile.read(2)
+        # Can simply check for nextWord not \x00\x00 because header format is <Hbb
+        # the 'H' of which indicates size two and the value of which needs to be non-zero.
+        # Lazy way of asking "is thisRecordSize greater than zero?"
+        if nextWord != b'\x00\x00':
+          testerHeader += nextWord + resultsFile.read(testerHeaderSize-2)
       # Validate:  Did we actually read a full testerHeader?
       if len(testerHeader) != testerHeaderSize:
         msg = "ABORT: Invalid tester header.  received: %s bytes, expected: %s bytes" % (len(testerHeader),testerHeaderSize)
@@ -1039,24 +1059,25 @@ class _ResultsParser:
 
       # A results key of 7 is used by the scripts when writing a data block to set the sequence number; this data block uses a testNumber of -7
       if resultsKey in (2,3,7,16,17):
+        
         # Read the remainder of the record
         restOfRecord = resultsFile.read(thisRecordSize-testerHeaderSize)
 
         # Get the tester CRC which is the last 2 bytes in the record
         crcFormat = ">H"
         crcSize = struct.calcsize(crcFormat)
-        testerCRCCheck =  struct.unpack(crcFormat,restOfRecord[len(restOfRecord)-crcSize:])[0]
+        testerCRCCheck =  struct.unpack(crcFormat,restOfRecord[len(restOfRecord)-crcSize:])[0]#.encode(encoding="ISO-8859-1",errors="surrogateescape")
 
         # Calculate the tester CRC; CRC entire rec except for the tester CRC on the end
         rec = testerHeader + restOfRecord[:-crcSize]
         # Pass the same arbitrary seed value (604 == throwing missiles) as firmware & tester do to ensure a CRC of 0's does not equal 0
-        crc = self.calcCRC(rec,len(rec),604)
+        crc = self.calcCRC(str(rec),len(rec),604)
         # CRC function returns a 32 bit value, but tester packs it into a 16 bit value so mask it to get a 16 bit value
         crc = crc & 0xFFFF
 
         # Compare our calculated CRC with the tester calculated CRC - if they match, this has to be a new style tester header
         if testerCRCCheck != crc:
-          #TraceMessage("CRC Check does not match.  DEX CRC Check: %s Tester CRC Check %s" % (crc,testerCRCCheck))
+          TraceMessage("CRC Check does not match.  DEX CRC Check: %s Tester CRC Check %s" % (crc,testerCRCCheck))
 
           # There is a slim chance an old 10 byte header would be in this loop by mistake. If the CRC check fails, try to process the old style 34 byte header
           resultsFile.seek(thisRecordByte0)
@@ -1104,13 +1125,16 @@ class _ResultsParser:
 
       # Results data coming back from the drive has a one-byte prefix (results key).  WinFOF calls resultsCallBack() passing firmware data
       # so the 1 byte prefix will exist.  Simulate that here by prefixing 1 space character so resultsCallBack() does not need to determine orgin
-      ResultsParser.resultsCallBack(" " + restOfRecord,collectParametric=self.collectParametric,currentTime=self.currentTime)
+      ResultsParser.resultsCallBack(b" " + restOfRecord,collectParametric=self.collectParametric, currentTime=self.currentTime)
 
     TraceMessage("DONE!  %i Test Record(s) Processed:" % thisRecordNumber)
     if self.failingTestSignature != {}: # found "FOF Final Error Code"
       TraceMessage("       %i total %s bytes (100%s)" % (resultsFileTotalBytes, resultsFileName, "%"))
     else: # print file pos. (byte) of last record looked at
-      TraceMessage("       @ byte %i [%s] of %i %s bytes" % (thisRecordByte0, hex(thisRecordByte0), resultsFileTotalBytes, resultsFileName))
+      try:
+        TraceMessage("       @ byte %i [%s] of %i %s bytes" % (thisRecordByte0, hex(thisRecordByte0), resultsFileTotalBytes, resultsFileName))
+      except UnboundLocalError:
+          pass
 
     resultsFile.close()
     # if resultsFile in .ZIP, del .r##
