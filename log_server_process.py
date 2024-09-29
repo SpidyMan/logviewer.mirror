@@ -3,6 +3,7 @@ import os
 import ftplib
 from pathlib import Path
 from sealogfile.dexer.parse_log import parse_Text_log
+from dex3 import dex_it
 from sealogfile import F3LogFile
 import os,zipfile
 #========== FTP Account SETUP ==============
@@ -55,11 +56,12 @@ class log_obj_creater():
                 self.zip_extractor(local_zip,local_r)
 
         self.parse_log(local_r,local_txt)
-        self.logobj = self.setup_logobj(local_txt)
-        #remove zip and r ,,, keep only txt file.
-        
-        # os.remove(local_zip)
-        # os.remove(local_r)
+        if dex_it(local_r,local_txt) != None:
+            self.logobj = self.setup_logobj(local_txt)
+            os.remove(local_zip)
+            os.remove(local_r)
+        else:
+            print('Error parsing text File...')
 
     def get_obj(self):
         return self.logobj
@@ -104,10 +106,6 @@ class log_obj_creater():
         r_file = os.path.join(self.logfolder,r_filename).replace('/',os.sep)
         return r_file
     
-    def parse_log(self,r_file,output_file):
-        with open(output_file,'wb') as outputfile:
-            parse_Text_log(r_file,outputfile)
-        return output_file
 
 # Main application
 if __name__ == "__main__":

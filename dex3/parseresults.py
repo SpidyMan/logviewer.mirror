@@ -514,7 +514,6 @@ class _ResultsParser:
       # Limit the string to 128 characters; need some limit to ensure process does not go crazy and overload the CM
       elif resultsData.find("**PRM_NAME=") != -1:
         self.paramNameByTest = resultsData.split("=",1)[1][0:128]
-
       else:
         # Look for last ScriptComment in results file to get the end time of the script which is used to calculate total script run time
         # As looping through results file, these variables will get overwritten by every ScriptComment; eventually they will contain data for the last comment
@@ -701,7 +700,7 @@ class _ResultsParser:
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Calculate a CRC the same way the CM/script code & self-test/IO code does
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  def calcCRC(self,data,sizein,crc):
+  def xxxcalcCRC(self,data,sizein,crc):
     for i in range(0,sizein): 
       c1 = crc & 0x00AA
       try:
@@ -711,7 +710,16 @@ class _ResultsParser:
       crc = crc + (c2 & 0x00FF)# & 0xFFFF #Protect data overflow.
     return crc
 
-
+  def calcCRC(self, data, sizein, crc):
+      # Ensure data is in bytes form
+      if isinstance(data, str):
+          data = data.encode('utf-8')  # Or use 'utf-8' depending on encoding
+      
+      for i in range(0, sizein): 
+          c1 = crc & 0x00AA
+          c2 = c1 ^ data[i]  # No need for ord() since data[i] is already an int in bytes
+          crc = crc + (c2 & 0x00FF)  # Protect data overflow.
+      return crc
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   def processOldFirmwareHeader(self,resultsSector):
@@ -744,12 +752,11 @@ class _ResultsParser:
   # WinFOF calls this function via a tester callback therefore the first 5 args & their order can not change
   # temp & the volts are no longer even used, they are remnants of the old firmware & tester header
   def resultsCallBack(self,data,currentTemp=None,drive5=None,drive12=None,collectParametric=None,currentTime=None):
-
     # WinFOF does a callback of this function and relies on this piece of code to write data to the results file
     if not isinstance(data, str):
         data = data.decode(encoding="ISO-8859-1",errors="surrogateescape")
     if self.saveToResultsFile:
-      from .writeresultsfunctions import ESGSaveResults
+      from .SampleTableDictionary.writeresultsfunctions import ESGSaveResults
       ESGSaveResults(data,collectParametric)
 
     # If our caller is reading from a results file, they will have a currentTime to pass in here.
@@ -763,7 +770,6 @@ class _ResultsParser:
     # Every firmware header has 2 bytes test number, 2 bytes error code and 1 byte block type
     firmareHeaderFormat = ">hHb"
     firmareHeaderSize = struct.calcsize(firmareHeaderFormat)
-    
     # Validate the size
     if len(resultsSector) < firmareHeaderSize:
       msg = self.errorMsg + "Invalid firmware header.  received: %s bytes, expected: >= %s bytes." % (len(resultsSector),firmareHeaderSize)
@@ -771,7 +777,6 @@ class _ResultsParser:
       return(1,msg)
 
     testNumber, errorCode, blockType = struct.unpack(firmareHeaderFormat,resultsSector[:firmareHeaderSize])
-
     # Is this a new style firmware header?
     if blockType in (1,):
       # On a new style record, the firmware CRC is the last 2 bytes of the firmware record
@@ -1062,7 +1067,6 @@ class _ResultsParser:
         
         # Read the remainder of the record
         restOfRecord = resultsFile.read(thisRecordSize-testerHeaderSize)
-
         # Get the tester CRC which is the last 2 bytes in the record
         crcFormat = ">H"
         crcSize = struct.calcsize(crcFormat)
@@ -1070,8 +1074,11 @@ class _ResultsParser:
 
         # Calculate the tester CRC; CRC entire rec except for the tester CRC on the end
         rec = testerHeader + restOfRecord[:-crcSize]
+      
         # Pass the same arbitrary seed value (604 == throwing missiles) as firmware & tester do to ensure a CRC of 0's does not equal 0
-        crc = self.calcCRC(str(rec),len(rec),604)
+        # Wiriya Edit this line ... 
+        # original: crc = self.calcCRC(str(rec),len(rec),604)  <<< bytes doesn't work this way. ... 
+        crc = self.calcCRC(rec,len(rec),604)
         # CRC function returns a 32 bit value, but tester packs it into a 16 bit value so mask it to get a 16 bit value
         crc = crc & 0xFFFF
 
@@ -1126,6 +1133,7 @@ class _ResultsParser:
       # Results data coming back from the drive has a one-byte prefix (results key).  WinFOF calls resultsCallBack() passing firmware data
       # so the 1 byte prefix will exist.  Simulate that here by prefixing 1 space character so resultsCallBack() does not need to determine orgin
       ResultsParser.resultsCallBack(b" " + restOfRecord,collectParametric=self.collectParametric, currentTime=self.currentTime)
+      
 
     TraceMessage("DONE!  %i Test Record(s) Processed:" % thisRecordNumber)
     if self.failingTestSignature != {}: # found "FOF Final Error Code"

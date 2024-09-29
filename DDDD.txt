@@ -1,8 +1,0 @@
-DEX Version: 2.42 
-Dictionary Rev: 3598
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-ERROR:  Cannot open paramCodeFile: param_cd.h
-ERROR:  Cannot open or read error code file: codes.h
-ERROR:  Cannot open or read process error code file: proc_codes.h
-ERROR:  Cannot open or read messages file: messages.h

@@ -7,10 +7,12 @@ import wx.lib.agw.aui as aui
 from cryptography.hazmat.primitives.kdf import pbkdf2
 import encodings.idna
 import re, os, sys
-from history_frame import history_frame   #from history_frame import history_frame,log_obj_creater
+from history_frame import history_frame
 from sealogfile.utils import str_it
 import sealogfile.highlight as HL
 import configparser
+
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 try:
