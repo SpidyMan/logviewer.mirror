@@ -1,14 +1,20 @@
 import wx
 import wx.grid as gridlib
 import pandas as pd
-import sql_query
 from log_server_process import log_obj_creater
+
+Testing = True
+
 class history_frame(wx.Frame):
     def __init__(self, parent,serial,maxts = 100):
-        self.df = sql_query.logservice_history_all(serial,maxts,show_query=False)
+        if Testing == True: self.df = pd.read_csv('./TestingFile/history_query.csv')
+        else: 
+            import sql_query
+            self.df = sql_query.logservice_history_all(serial,maxts,show_query=False)
+
         self.serial = serial
         self.maxts  =maxts
-        log_selected = None
+        # log_selected = None
         wx.Frame.__init__(self, parent, 
                           title=f'{serial} history for latest:{maxts} transeqs', 
                           size=(500, 600))

@@ -16,6 +16,7 @@ def validateFile(userOptions,userOptionsKey,defaultFileName):
         print("ERROR:  %s is not a valid file or directory" % (userOptions[userOptionsKey]))
       else:
         userOptions[userOptionsKey] = os.path.join(userOptions[userOptionsKey],defaultFileName)
+
   else:
     userOptions[userOptionsKey] = defaultFileName
 
@@ -31,13 +32,7 @@ def dex_file(r_file,output_file):
     userOptions["textResultsOnly"] = 1
     resultsFileName = r_file
     userOptions["textFileName"] = output_file
-
-
-    if not os.path.exists(resultsFileName):
-      resultsFileName = resultsFileName + '.zip'
-      if not os.path.exists(resultsFileName):
-        print("ERROR:  File %s does not exist" % (resultsFileName))
-        return
+    print(f'rfile:{resultsFileName}')
     # Determine if file info passed in is valid or if defaults should be used
     validateFile(userOptions,"paramFile", paramFileName)
     validateFile(userOptions,"errorCodeFile", errorCodeFileName)

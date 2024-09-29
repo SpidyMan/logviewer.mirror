@@ -2,7 +2,7 @@
 import os
 import ftplib
 from pathlib import Path
-from sealogfile.dexer.parse_log import parse_Text_log
+
 from dex3 import dex_it
 from sealogfile import F3LogFile
 import os,zipfile
@@ -12,8 +12,8 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 FTP_USERNAME=config['FTP'].get('FTP_USERNAME')
 FTP_PASSWORD=config['FTP'].get('FTP_PASSWORD')
-
-ConsolePrint = True
+Remove_RAW_FILE = config['SETUP'].getboolean('Remove_Raw_LOG')
+ConsolePrint = False
 directory = os.path.dirname(os.path.realpath(__file__))
 
 class log_obj_creater():
@@ -54,12 +54,15 @@ class log_obj_creater():
             if not os.path.exists(local_zip):  # if zip not exist... re-download it.
                 self.download_file_from_ftp(self.host,self.path,self.ftp_filename,local_zip)
                 self.zip_extractor(local_zip,local_r)
+                print(local_zip)
 
-        self.parse_log(local_r,local_txt)
-        if dex_it(local_r,local_txt) != None:
+        #self.parse_log(local_r,local_txt)
+        if dex_it.dex_file(local_r,local_txt) != None:
             self.logobj = self.setup_logobj(local_txt)
+        if Remove_RAW_FILE:
             os.remove(local_zip)
             os.remove(local_r)
+
         else:
             print('Error parsing text File...')
 
@@ -105,7 +108,7 @@ class log_obj_creater():
     
         r_file = os.path.join(self.logfolder,r_filename).replace('/',os.sep)
         return r_file
-    
+
 
 # Main application
 if __name__ == "__main__":
