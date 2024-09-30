@@ -3,8 +3,10 @@ import wx.grid as gridlib
 import pandas as pd
 from log_server_process import log_obj_creater
 
-Testing = True
-
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+Testing = config['SETUP'].getboolean('TESTING',False)
 class history_frame(wx.Frame):
     def __init__(self, parent,serial,maxts = 100):
         if Testing == True: self.df = pd.read_csv('./TestingFile/history_query.csv')

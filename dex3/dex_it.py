@@ -5,20 +5,21 @@
 import sys,time,os
 try:
   from .parseresults import ResultsParser,VERSION
+  
 except ImportError:
   from parseresults import ResultsParser,VERSION
 
-
+script_dir = os.path.dirname(os.path.realpath(__file__))
 def validateFile(userOptions,userOptionsKey,defaultFileName):
   if userOptionsKey in userOptions:
     if not os.path.isfile(userOptions[userOptionsKey]):
       if not os.path.isdir(userOptions[userOptionsKey]):
         print("ERROR:  %s is not a valid file or directory" % (userOptions[userOptionsKey]))
       else:
-        userOptions[userOptionsKey] = os.path.join(userOptions[userOptionsKey],defaultFileName)
+        userOptions[userOptionsKey] = os.path.join(script_dir,userOptions[userOptionsKey],defaultFileName)
 
   else:
-    userOptions[userOptionsKey] = defaultFileName
+    userOptions[userOptionsKey] = os.path.join(script_dir,defaultFileName)
 
 
 def dex_file(r_file,output_file):

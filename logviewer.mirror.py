@@ -10,15 +10,13 @@ import re, os, sys
 from history_frame import history_frame
 from sealogfile.utils import str_it
 import sealogfile.highlight as HL
-import configparser
-
+import configparser,ast
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-try:
-    max_history_count = config['SETUP'].getint('MAX_HISTORY')
-except:
-    max_history_count = 100
+max_history_count = config['SETUP'].getint('MAX_HISTORY',100)
+
+
 
 class LogViewer(wx.Panel):
     """LogViewer modified to be used inside a tab."""
@@ -164,20 +162,25 @@ class MainFrame(wx.Frame):
         
         self.toolbar.AddControl(wx.StaticText(self.toolbar, -1, " DriveSN: "))
         self.toolbar.AddSeparator()
-        #self.snlist = utils.getSetting("DriveSN_history", [])
-        self.snlist = ['']
+        try:
+            hist= configparser.ConfigParser()
+            hist.read('history.ini')
+            self.snlist = ast.literal_eval(hist.get('History','SN_History'))
+        except:
+            self.snlist = ['']
+
         self.comboBoxSN = wx.ComboBox(parent=self.toolbar, id=-1, value="", size=wx.Size(90, 20), choices=self.snlist)
         self.comboBoxSN.Select(0)
         self.toolbar.AddControl(self.comboBoxSN)
         self.toolbar.AddSeparator()
         btnGo = buttons.ThemedGenBitmapTextButton(self.toolbar, -1, None, 'View History', size=wx.Size(100, 26))
         self.toolbar.AddSeparator()
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnButtonGo)  ## blind enter key with go button
         self.Bind(wx.EVT_BUTTON, self.OnButtonGo, btnGo)
         self.toolbar.AddControl(btnGo)
         self.toolbar.Realize() 
 
         # Create a notebook (tab control)
-        #self.notebook = wx.Notebook(self)
         self.notebook  = aui.AuiNotebook(self)
 
         # Layout
@@ -195,6 +198,7 @@ class MainFrame(wx.Frame):
             if self.hist_frame is None or not self.hist_frame.IsShown():
                 self.hist_frame = history_frame(self, drivesn, max_history_count)
                 self.hist_frame.Bind(wx.EVT_CLOSE, self.on_hist_frame_close)
+                self.update_sn_list(drivesn)
                 self.hist_frame.Show()
             else:
                 self.hist_frame.Raise()  # Bring the existing frame to the front
@@ -222,6 +226,9 @@ class MainFrame(wx.Frame):
             wx.MessageBox(f"Failed to open log file: {str(e)}", "Error", wx.OK | wx.ICON_ERROR)
 
     def add_log_tab(self, logobj: sealog.F3LogFile):
+        cursor = self.GetCursor()
+        self.SetCursor(wx.Cursor(wx.CURSOR_WAIT))
+
         log_filename = os.path.basename(logobj.FileName)
         for i in range(self.notebook.GetPageCount()):
             if self.notebook.GetPageText(i) == log_filename:
@@ -231,18 +238,39 @@ class MainFrame(wx.Frame):
         log_viewer = LogViewer(self.notebook, logobj)
         self.notebook.AddPage(log_viewer, log_filename, select=True)
         log_viewer.TabName = log_filename
+        log_viewer.editor.SetSelection(0,0) # Just for bypass select all for first run.
+        self.SetCursor(cursor)
+
+    def update_sn_list(self, new_sn):
+        # Read the history file
+        hist = configparser.ConfigParser()
+        hist.read('history.ini')
+        sn_list = list(ast.literal_eval(hist.get('History', 'SN_History')))
+        if new_sn not in sn_list:
+            sn_list.insert(0,new_sn)
+            if len(sn_list) > 10:
+                sn_list = sn_list[-10:]
+            hist.set('History', 'SN_History', repr(sn_list))
+            with open('history.ini', 'w') as configfile:
+                hist.write(configfile)
+
+def remove_log():
+    directory = os.path.dirname(os.path.realpath(__file__))
+    logfiles = os.path.join(directory,'LOGFiles','*.*')
+    import glob
+    for f in glob.glob(logfiles):
+        os.remove(f)
+
 # Main application
 if __name__ == "__main__":
     if sys.version_info[0] == 3:
         print('This is Python3 .. Lets Rock n Roll!!!')
+        if config['SETUP'].getboolean('Remov_All_LOG',True):
+            remove_log()
         app = wx.App(False)
         frame = MainFrame(None, "LogViewer ก๊อบเกรด B ( Speed9 Logviewer)")
         frame.Show(True)
-        # #ftp_zip_path = "teppinasv001.seagate.com/prod/none/merlin/history/COMET/20/B04D062F.4905113404.r.zip"
-        # local_file="B04D062F_COMET_135_PASS.txt"
-        # log_process = log_obj_creater('ABCDE','TEST',99,'PASS',ftp_zip_path,local_file)
-        # frame.add_log_tab(log_process.logobj)
         app.MainLoop()
     else:
-        print('Python2.... You are too old.. please install new python..')
+        print('Python2.... You are too old.. please install new python3.x..')
 

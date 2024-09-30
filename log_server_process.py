@@ -12,7 +12,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 FTP_USERNAME=config['FTP'].get('FTP_USERNAME')
 FTP_PASSWORD=config['FTP'].get('FTP_PASSWORD')
-Remove_RAW_FILE = config['SETUP'].getboolean('Remove_Raw_LOG')
+Remove_RAW_FILE = config['SETUP'].getboolean('Remove_Raw_LOG',True)
 ConsolePrint = False
 directory = os.path.dirname(os.path.realpath(__file__))
 

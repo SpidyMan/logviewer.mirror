@@ -57,7 +57,7 @@ def query_sql(query_sql,params=None,show_query = False):
             cursor.close()
         if connection is not None:
             connection.close()
-        print("Database connection closed.")
+        #print("Database connection closed.")
         return user_asked_df
 
 
@@ -158,49 +158,59 @@ def logservice_history_all(serial,maxseq = None,show_query=False):
     '''SELECT 
     CAST(e.TRANS_SEQ as integer) as TS,
     e.EVENT_DATE as DATE_TIME,
-    --e.SERIAL_NUM,
     e.EQUIP_ID as EQP_ID,
     e.OPERATION as OP,
     CASE 
-        WHEN e.EVENT_STATUS = 'F' THEN COALESCE(clm.EVENT_FAIL_CODE, cum.EVENT_FAIL_CODE, pli.EVENT_FAIL_CODE,co.FAIL_CODE)
+        WHEN e.EVENT_STATUS = 'F' THEN 
+            COALESCE(
+                clm.EVENT_FAIL_CODE, 
+                cum.EVENT_FAIL_CODE, 
+                pli.EVENT_FAIL_CODE, 
+                co.FAIL_CODE
+            )
         WHEN e.EVENT_STATUS = 'P' THEN 'PASS'
         WHEN e.EVENT_STATUS = 'S' THEN 'START'
-        ELSE e.EVENT_STATUS  -- This is optional if you want to keep any other status as is
+        ELSE e.EVENT_STATUS
     END AS STATUS,
     '' AS RT,
     CASE 
-	    WHEN  fl.FILE_NAME IS not NULL THEN fl.HOST||'/' || fl."PATH" ||'/' || fl.FILE_NAME 
+	    WHEN fl.FILE_NAME IS not NULL THEN fl.HOST || '/' || fl."PATH" || '/' || fl.FILE_NAME 
 	    ELSE ''
-	    END AS LOGFILE,
-        '' AS ATTR
+	END AS LOGFILE,
+    '' AS ATTR
 FROM 
-    ODs.EVENT e
-LEFT JOIN 
-    ods.clmd clm ON e.SERIAL_NUM = clm.SERIAL_NUM 
-                 AND e.TRANS_SEQ = clm.TRANS_SEQ 
-                 AND e.EVENT_DATE = clm.EVENT_DATE
-LEFT JOIN 
-    ods.cumd cum ON e.SERIAL_NUM = cum.SERIAL_NUM 
-                 AND e.TRANS_SEQ = cum.TRANS_SEQ 
-                 AND e.EVENT_DATE = cum.EVENT_DATE
-LEFT JOIN 
-    ods.plid pli ON e.SERIAL_NUM = pli.SERIAL_NUM 
-                 AND e.TRANS_SEQ = pli.TRANS_SEQ 
-                 AND e.EVENT_DATE = pli.EVENT_DATE       
-LEFT JOIN 
-    ods.comet co ON e.SERIAL_NUM = co.SERIAL_NUM 
-                 AND e.TRANS_SEQ = co.TRANS_SEQ 
-                 AND e.EVENT_DATE = co.EVENT_DATE            
-LEFT JOIN 
-    ods.FILE_LOCATOR fl ON e.SERIAL_NUM = fl.SERIAL_NUM
-                 AND e.TRANS_SEQ = fl.TRANS_SEQ  
-                 AND e.EVENT_DATE = fl.EVENT_DATE          
+    ods.EVENT e
+    LEFT JOIN ods.FILE_LOCATOR fl 
+        ON e.SERIAL_NUM = fl.SERIAL_NUM
+        AND e.TRANS_SEQ = fl.TRANS_SEQ  
+        AND e.EVENT_DATE = fl.EVENT_DATE
+    -- Join other tables conditionally only if EVENT_STATUS = 'F'
+    LEFT JOIN ods.clmd clm 
+        ON e.EVENT_STATUS = 'F'
+        AND e.SERIAL_NUM = clm.SERIAL_NUM 
+        AND e.TRANS_SEQ = clm.TRANS_SEQ 
+        AND e.EVENT_DATE = clm.EVENT_DATE
+    LEFT JOIN ods.cumd cum 
+        ON e.EVENT_STATUS = 'F'
+        AND e.SERIAL_NUM = cum.SERIAL_NUM 
+        AND e.TRANS_SEQ = cum.TRANS_SEQ 
+        AND e.EVENT_DATE = cum.EVENT_DATE
+    LEFT JOIN ods.plid pli 
+        ON e.EVENT_STATUS = 'F'
+        AND e.SERIAL_NUM = pli.SERIAL_NUM 
+        AND e.TRANS_SEQ = pli.TRANS_SEQ 
+        AND e.EVENT_DATE = pli.EVENT_DATE
+    LEFT JOIN ods.comet co 
+        ON e.EVENT_STATUS = 'F'
+        AND e.SERIAL_NUM = co.SERIAL_NUM 
+        AND e.TRANS_SEQ = co.TRANS_SEQ 
+        AND e.EVENT_DATE = co.EVENT_DATE
 WHERE 
     e.SERIAL_NUM = :1
-AND e.EVENT_DATE > SYSDATE -100
+    AND e.EVENT_DATE > SYSDATE - 100
 ORDER BY 
     e.EVENT_DATE DESC
-'''
+    '''
     if isinstance(maxseq,int):
         query+=f'FETCH NEXT {maxseq} ROWS ONLY'
 
