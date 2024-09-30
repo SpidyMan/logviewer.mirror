@@ -118,11 +118,12 @@ STATE_TEST_DONE = "Test Done"
 try:     TraceMessage
 except:
   def TraceMessage(msg): 
-      try: 
+      try:
+        return ## just to disable printing. 
         print(msg)
+        
       except UnicodeEncodeError:
         print(msg.encode(encoding="ISO-8859-1",errors="surrogateescape"))
-
 
 try:
    from ErrorCodes import errCodes
